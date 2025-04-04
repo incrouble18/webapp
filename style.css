@@ -1,0 +1,26 @@
+body {
+    font-family: sans-serif;
+    padding: 15px;
+    /* Telegram передает цвета темы, можно их использовать */
+    background-color: var(--tg-theme-bg-color, white);
+    color: var(--tg-theme-text-color, black);
+}
+
+#main-menu button, #game-section button, #char-section button, #house-section button {
+    display: block;
+    width: 90%;
+    padding: 15px;
+    margin: 10px auto;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    /* Используем цвета кнопок Telegram */
+    background-color: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, white);
+}
+
+h1, h2 {
+   text-align: center;
+   color: var(--tg-theme-text-color, black);
+}
