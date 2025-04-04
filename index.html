@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalRise Games</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Секция с иконками -->
+        <div class="icon-bar">
+            <img src="inventory.png" alt="Inventory" class="icon" data-action="inventory">
+            <img src="games.png" alt="Games" class="icon" data-action="games">
+            <img src="room.png" alt="Room" class="icon" data-action="room">
+            <img src="stats.png" alt="Stats" class="icon" data-action="stats">
+        </div>
+
+        <!-- Заголовок -->
+        <h1>Игровой Мир WalRise</h1>
+
+        <!-- Список игр -->
+        <div class="game-list" id="game-list">
+            <div class="game-card">
+                <h2>MEMORY</h2>
+                <p>Запомни 16 слов за 2 минуты</p>
+                <img src="memory_start.png" alt="Start Memory Game" class="start-button" data-game="memory">
+            </div>
+            <div class="game-card">
+                <h2>MATH</h2>
+                <p>Решай пример 15 + 16</p>
+                <img src="math_start.png" alt="Start Math Game" class="start-button" data-game="math">
+            </div>
+        </div>
+
+        <!-- Экран игры Memory -->
+        <div id="memory-game" class="game-screen" style="display: none;">
+            <h2>Memory Game</h2>
+            <p>Запомни слова за 2 минуты!</p>
+            <div id="word-list"></div>
+            <p>Осталось времени: <span id="memory-timer">120</span> сек</p>
+            <button id="memory-submit">Готово</button>
+        </div>
+
+        <!-- Экран игры Math -->
+        <div id="math-game" class="game-screen" style="display: none;">
+            <h2>Math Game</h2>
+            <p>Решай пример: <span id="math-problem"></span></p>
+            <input type="number" id="math-answer" placeholder="Ваш ответ">
+            <button id="math-submit">Отправить</button>
+        </div>
+
+        <!-- Модальное окно для сообщений -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="modal-message"></p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
