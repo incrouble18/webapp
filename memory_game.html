@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-screen">
+        <h2>MEMORY CHALLENGE</h2>
+        
+        <div id="game-phase">
+            <div id="memorization-phase">
+                <div class="timer" id="time-display">2:00</div>
+                <p>Memorize these 30 words:</p>
+                <div class="word-container" id="words-to-memorize">
+                    <!-- Words will be generated here by JavaScript -->
+                </div>
+            </div>
+            
+            <div id="recall-phase" style="display: none;">
+                <h3>Time's up!</h3>
+                <p>Type all the words you remember (separate with spaces or new lines):</p>
+                <textarea id="recalled-words" rows="8" style="width: 90%; max-width: 350px; margin: 15px 0; padding: 10px;"></textarea>
+                <button id="check-answers" class="action-button">Submit Answers</button>
+            </div>
+            
+            <div id="results-phase" style="display: none;">
+                <h3>Your Results</h3>
+                <p>Words correctly remembered: <span id="correct-count">0</span> / 30</p>
+                <p>XP earned: <span id="xp-earned">0</span></p>
+                <div id="words-results" class="result-display">
+                    <!-- Results will be shown here -->
+                </div>
+                <button class="back-button" onclick="window.location.href='index.html'">Return to Menu</button>
+                <button id="play-again" class="action-button">Play Again</button>
+            </div>
+        </div>
+        
+        <button id="back-button" class="back-button">BACK</button>
+    </div>
+    
+    <script>
+        // Word list for memory game
+        const wordPool = [
+            "Apple", "Book", "Chair", "Dance", "Earth", "Friend", "Garden", "House", 
+            "Image", "Journey", "Knowledge", "Laugh", "Music", "Nature", "Ocean", "People", 
+            "Question", "Rainbow", "Sunshine", "Travel", "Universe", "Victory", "Wonder", 
+            "Xylophone", "Youth", "Zebra", "Adventure", "Beautiful", "Celebration", "Diamond",
+            "Elephant", "Forest", "Galaxy", "Happiness", "Island", "Jungle", "Kingdom", "Liberty",
+            "Mountain", "Notebook", "Opportunity", "Paradise", "Quality", "Restaurant", "Satellite",
+            "Telescope", "Umbrella", "Vacation", "Waterfall", "Excellence", "Yearbook", "Zeppelin",
+            "Butterfly", "Chocolate", "Dinosaur", "Elevator", "Fireplace", "Giraffe", "Helicopter"
+        ];
+        
+        let selectedWords = [];
+        let timeLeft = 120; // 2 minutes in seconds
+        let timerInterval;
+        
+        // DOM Elements
+        const timeDisplay = document.getElementById('time-display');
+        const wordsContainer = document.getElementById('words-to-memorize');
+        const memorizationPhase = document.getElementById('memorization-phase');
+        const recallPhase = document.getElementById('recall-phase');
+        const resultsPhase = document.getElementById('results-phase');
+        const recalledWords = document.getElementById('recalled-words');
+        const checkAnswersBtn = document.getElementById('check-answers');
+        const correctCount = document.getElementById('correct-count');
+        const xpEarned = document.getElementById('xp-earned');
+        const wordsResults = document.getElementById('words-results');
+        const playAgainBtn = document.getElementById('play-again');
+        const backButton = document.getElementById('back-button');
+        
+        // Initialize the game
+        function initGame() {
+            // Shuffle and select 30 words
+            selectedWords = shuffleArray(wordPool).slice(0, 30);
+            
+            // Display the words
+            wordsContainer.innerHTML = '';
+            selectedWords.forEach(word => {
+                const wordElem = document.createElement('div');
+                wordElem.className = 'word-box';
+                wordElem.textContent = word;
+                wordsContainer.appendChild(wordElem);
+            });
+            
+            // Start the timer
+            timeLeft = 120;
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Show memorization phase
+            memorizationPhase.style.display = 'block';
+            recallPhase.style.display = 'none';
+            resultsPhase.style.display = 'none';
+            backButton.style.display = 'block';
+        }
+        
+        // Update timer
+        function updateTimer() {
+            timeLeft--;
+            updateTimerDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                showRecallPhase();
+            }
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timeDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Show recall phase
+        function showRecallPhase() {
+            memorizationPhase.style.display = 'none';
+            recallPhase.style.display = 'block';
+            backButton.style.display = 'none';
+        }
+        
+        // Check answers
+        function checkAnswers() {
+            // Get user's recalled words
+            const userInput = recalledWords.value.trim().toLowerCase();
+            const userWords = userInput.split(/[\s,]+/).filter(word => word.length > 0);
+            
+            // Check which words the user correctly recalled
+            const correctWords = [];
+            
+            userWords.forEach(userWord => {
+                const normalizedUserWord = userWord.trim().toLowerCase();
+                if (normalizedUserWord.length > 0) {
+                    const matchedWord = selectedWords.find(word => 
+                        word.toLowerCase() === normalizedUserWord);
+                    
+                    if (matchedWord && !correctWords.includes(matchedWord)) {
+                        correctWords.push(matchedWord);
+                    }
+                }
+            });
+            
+            // Display results
+            correctCount.textContent = correctWords.length;
+            
+            // Calculate XP (5 XP per correct word)
+            const xp = correctWords.length * 5;
+            xpEarned.textContent = xp;
+            
+            // Display word results
+            wordsResults.innerHTML = '';
+            
+            const correctList = document.createElement('div');
+            correctList.innerHTML = `<h4>Words you remembered (${correctWords.length}):</h4>`;
+            
+            const correctWordsContainer = document.createElement('div');
+            correctWordsContainer.style.display = 'flex';
+            correctWordsContainer.style.flexWrap = 'wrap';
+            correctWordsContainer.style.gap = '8px';
+            correctWordsContainer.style.justifyContent = 'center';
+            correctWordsContainer.style.marginBottom = '20px';
+            
+            correctWords.forEach(word => {
+                const wordElem = document.createElement('div');
+                wordElem.className = 'word-box';
+                wordElem.style.backgroundColor = 'rgba(75, 181, 67, 0.2)';
+                wordElem.textContent = word;
+                correctWordsContainer.appendChild(wordElem);
+            });
+            
+            correctList.appendChild(correctWordsContainer);
+            wordsResults.appendChild(correctList);
+            
+            // Show words that were missed
+            const missedWords = selectedWords.filter(word => !correctWords.includes(word));
+            
+            const missedList = document.createElement('div');
+            missedList.innerHTML = `<h4>Words you missed (${missedWords.length}):</h4>`;
+            
+            const missedWordsContainer = document.createElement('div');
+            missedWordsContainer.style.display = 'flex';
+            missedWordsContainer.style.flexWrap = 'wrap';
+            missedWordsContainer.style.gap = '8px';
+            missedWordsContainer.style.justifyContent = 'center';
+            
+            missedWords.forEach(word => {
+                const wordElem = document.createElement('div');
+                wordElem.className = 'word-box';
+                wordElem.style.backgroundColor = 'rgba(181, 67, 67, 0.2)';
+                wordElem.textContent = word;
+                missedWordsContainer.appendChild(wordElem);
+            });
+            
+            missedList.appendChild(missedWordsContainer);
+            wordsResults.appendChild(missedList);
+            
+            // Show results phase
+            recallPhase.style.display = 'none';
+            resultsPhase.style.display = 'block';
+            
+            // Update user data
+            updateUserData(xp, correctWords.length);
+        }
+        
+        // Update user data with results
+        function updateUserData(xp, correctWordCount) {
+            // Load user data
+            const savedData = localStorage.getItem('brainTrainingUserData');
+            let userData = savedData ? JSON.parse(savedData) : {
+                level: 1,
+                xp: 0,
+                lives: 5,
+                lastPlayed: new Date(),
+                stats: {
+                    intelligence: 10,
+                    sports: 5,
+                    languages: 3,
+                    energy: 8,
+                    creativity: 7,
+                    health: 10
+                },
+                equipment: {
+                    skin: 'light',
+                    outfit: 'casual',
+                    headgear: 'none',
+                    weapon: 'none'
+                },
+                achievements: {
+                    memoryMaster: false,
+                    mathWizard: false,
+                    dailyStreak: false
+                },
+                inventory: []
+            };
+            
+            // Add XP
+            userData.xp += xp;
+            
+            // Level up if enough XP
+            const xpNeeded = userData.level * 100;
+            if (userData.xp >= xpNeeded) {
+                userData.level++;
+                userData.xp -= xpNeeded;
+            }
+            
+            // Increase intelligence stat (1 point per 5 correct words)
+            userData.stats.intelligence += Math.floor(correctWordCount / 5);
+            
+            // Check for memory master achievement
+            if (correctWordCount >= 16) {
+                userData.achievements.memoryMaster = true;
+            }
+            
+            // Update last played time
+            userData.lastPlayed = new Date();
+            
+            // Save user data
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+        
+        // Shuffle array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+        
+        // Event listeners
+        checkAnswersBtn.addEventListener('click', checkAnswers);
+        playAgainBtn.addEventListener('click', initGame);
+        backButton.addEventListener('click', function() {
+            if (confirm('Are you sure you want to go back? Your progress will be lost.')) {
+                clearInterval(timerInterval);
+                window.location.href = 'index.html';
+            }
+        });
+        
+        // Initialize game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>

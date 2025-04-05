@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Stats</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .stats-container {
+            background-color: rgba(35, 35, 45, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+        
+        .character-container {
+            position: relative;
+            width: 150px;
+            height: 200px;
+            margin: 0 auto;
+            background-color: transparent;
+        }
+        
+        .level-container {
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .level-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4e9af1;
+        }
+        
+        .xp-bar {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            height: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .xp-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .lives-container {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        
+        .life-icon {
+            font-size: 1.5em;
+        }
+        
+        .attributes-container {
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .attribute-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            align-items: center;
+        }
+        
+        .attribute-name {
+            font-weight: bold;
+            color: #ddd;
+        }
+        
+        .attribute-value {
+            padding: 3px 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-weight: bold;
+            color: #4e9af1;
+        }
+        
+        .equipment-container {
+            margin: 25px 0;
+        }
+        
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .equipment-slot {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .equipment-slot:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .slot-name {
+            font-size: 0.9em;
+            color: #ddd;
+            margin-bottom: 5px;
+        }
+        
+        .slot-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .slot-icon.empty {
+            color: #999;
+        }
+        
+        .slot-icon.equipped {
+            color: #4e9af1;
+            background-color: rgba(78, 154, 241, 0.2);
+        }
+        
+        .achievements-container {
+            margin: 25px 0;
+        }
+        
+        .achievement-list {
+            margin-top: 15px;
+        }
+        
+        .achievement-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.7;
+        }
+        
+        .achievement-item.unlocked {
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+        
+        .achievement-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            font-size: 0.9em;
+            color: #ddd;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        
+        /* Customization modal */
+        .customization-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .customization-content {
+            background-color: rgba(35, 35, 45, 0.95);
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" alt="Games" class="icon" data-action="games">
+            <img src="stats.png" alt="Stats" class="icon" data-action="stats">
+            <img src="room.png" alt="Room" class="icon" data-action="room">
+            <img src="inventory.png" alt="Inventory" class="icon" data-action="inventory">
+        </div>
+        
+        <div class="stats-container">
+            <h2>CHARACTER STATS</h2>
+            
+            <div class="character-container" id="character-base">
+                <div id="char-headgear"></div>
+                <div id="char-head"></div>
+                <div id="char-face">
+                    <div id="char-mouth"></div>
+                </div>
+                <div id="char-outfit"></div>
+                <div id="char-body"></div>
+                <div id="char-weapon"></div>
+            </div>
+            
+            <div class="level-container">
+                <div class="level-display">Level <span id="level-value">1</span></div>
+                <div class="xp-display">XP: <span id="xp-value">0</span>/<span id="xp-next-level">100</span></div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xp-fill"></div>
+                </div>
+            </div>
+            
+            <div class="lives-section">
+                <h3>LIVES</h3>
+                <div class="lives-container" id="lives-container">
+                    <!-- Lives will be added dynamically -->
+                </div>
+            </div>
+            
+            <div class="attributes-container">
+                <h3>ATTRIBUTES</h3>
+                <div class="attribute-row">
+                    <div class="attribute-name">Intelligence</div>
+                    <div class="attribute-value" id="intelligence-value">10</div>
+                </div>
+                <div class="attribute-row">
+                    <div class="attribute-name">Sports</div>
+                    <div class="attribute-value" id="sports-value">5</div>
+                </div>
+                <div class="attribute-row">
+                    <div class="attribute-name">Languages</div>
+                    <div class="attribute-value" id="languages-value">3</div>
+                </div>
+                <div class="attribute-row">
+                    <div class="attribute-name">Energy</div>
+                    <div class="attribute-value" id="energy-value">8</div>
+                </div>
+                <div class="attribute-row">
+                    <div class="attribute-name">Creativity</div>
+                    <div class="attribute-value" id="creativity-value">7</div>
+                </div>
+                <div class="attribute-row">
+                    <div class="attribute-name">Health</div>
+                    <div class="attribute-value" id="health-value">10</div>
+                </div>
+            </div>
+            
+            <div class="equipment-container">
+                <h3>CURRENT EQUIPMENT</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-slot" data-slot="head">
+                        <div class="slot-name">Head</div>
+                        <div class="slot-icon empty">?</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="body">
+                        <div class="slot-name">Body</div>
+                        <div class="slot-icon empty">?</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="accessory">
+                        <div class="slot-name">Accessory</div>
+                        <div class="slot-icon empty">?</div>
+                    </div>
+                    <div class="equipment-slot" data-slot="special">
+                        <div class="slot-name">Special</div>
+                        <div class="slot-icon empty">?</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="achievements-container">
+                <h3>ACHIEVEMENTS</h3>
+                <div class="achievement-list">
+                    <div class="achievement-item locked" id="achievement-memory">
+                        <div class="achievement-name">Memory Master</div>
+                        <div class="achievement-desc">Remember all 16 words in the memory game</div>
+                    </div>
+                    <div class="achievement-item locked" id="achievement-math">
+                        <div class="achievement-name">Math Wizard</div>
+                        <div class="achievement-desc">Solve 20 math problems in 1 minute</div>
+                    </div>
+                    <div class="achievement-item locked" id="achievement-streak">
+                        <div class="achievement-name">Daily Streak</div>
+                        <div class="achievement-desc">Play for 7 days in a row</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="back-button" id="back-to-home">Back to Home</button>
+                <button class="action-button" id="customize-button">Customize</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Character Customization Modal -->
+    <div id="customization-modal" class="customization-modal">
+        <div class="customization-content">
+            <span class="close">&times;</span>
+            <!-- Customization options will be added dynamically -->
+        </div>
+    </div>
+    
+    <script src="stats.js"></script>
+</body>
+</html>

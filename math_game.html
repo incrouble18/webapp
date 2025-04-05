@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-screen">
+        <h2>MATH CHALLENGE</h2>
+        
+        <div id="game-phase">
+            <div id="countdown-phase">
+                <h3>Get Ready...</h3>
+                <div class="timer" id="countdown">3</div>
+            </div>
+            
+            <div id="problem-phase" style="display: none;">
+                <div class="timer" id="time-display">00:00</div>
+                <p>Solve this problem:</p>
+                <div class="math-problem" id="current-problem"></div>
+                <input type="number" id="answer-input" class="answer-input" placeholder="Answer">
+                <button id="submit-answer" class="action-button">Submit</button>
+                <div id="progress">Problem: <span id="current-count">1</span> / 20</div>
+            </div>
+            
+            <div id="results-phase" style="display: none;">
+                <h3>Your Results</h3>
+                <p>Time: <span id="final-time">00:00</span></p>
+                <p>Correct answers: <span id="correct-answers">0</span> / 20</p>
+                <p>XP earned: <span id="xp-earned">0</span></p>
+                
+                <div class="records">
+                    <h3>Your Records</h3>
+                    <div id="time-records">
+                        <!-- Time records will be shown here -->
+                    </div>
+                </div>
+                
+                <button class="back-button" onclick="window.location.href='index.html'">Return to Menu</button>
+                <button id="play-again" class="action-button">Play Again</button>
+            </div>
+        </div>
+        
+        <button id="back-button" class="back-button">BACK</button>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const countdownPhase = document.getElementById('countdown-phase');
+        const problemPhase = document.getElementById('problem-phase');
+        const resultsPhase = document.getElementById('results-phase');
+        const countdownDisplay = document.getElementById('countdown');
+        const timeDisplay = document.getElementById('time-display');
+        const currentProblem = document.getElementById('current-problem');
+        const answerInput = document.getElementById('answer-input');
+        const submitAnswerBtn = document.getElementById('submit-answer');
+        const currentCount = document.getElementById('current-count');
+        const finalTime = document.getElementById('final-time');
+        const correctAnswers = document.getElementById('correct-answers');
+        const xpEarned = document.getElementById('xp-earned');
+        const timeRecords = document.getElementById('time-records');
+        const playAgainBtn = document.getElementById('play-again');
+        const backButton = document.getElementById('back-button');
+        
+        // Game variables
+        let countdown = 3;
+        let countdownInterval;
+        let gameTime = 0;
+        let gameInterval;
+        let problemCount = 0;
+        let correctCount = 0;
+        let problems = [];
+        
+        // Initialize the game
+        function initGame() {
+            // Reset game state
+            countdown = 3;
+            gameTime = 0;
+            problemCount = 0;
+            correctCount = 0;
+            problems = generateProblems(20);
+            
+            // Show countdown phase
+            countdownPhase.style.display = 'block';
+            problemPhase.style.display = 'none';
+            resultsPhase.style.display = 'none';
+            backButton.style.display = 'block';
+            
+            // Start countdown
+            updateCountdownDisplay();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+        
+        // Update countdown
+        function updateCountdown() {
+            countdown--;
+            updateCountdownDisplay();
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                startGame();
+            }
+        }
+        
+        // Update countdown display
+        function updateCountdownDisplay() {
+            countdownDisplay.textContent = countdown;
+        }
+        
+        // Start the game
+        function startGame() {
+            // Show problem phase
+            countdownPhase.style.display = 'none';
+            problemPhase.style.display = 'block';
+            
+            // Start timer
+            gameInterval = setInterval(updateGameTime, 1000);
+            
+            // Show first problem
+            showNextProblem();
+            
+            // Focus on answer input
+            answerInput.focus();
+        }
+        
+        // Update game time
+        function updateGameTime() {
+            gameTime++;
+            updateTimeDisplay();
+        }
+        
+        // Update time display
+        function updateTimeDisplay() {
+            const minutes = Math.floor(gameTime / 60);
+            const seconds = gameTime % 60;
+            timeDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Show next problem
+        function showNextProblem() {
+            if (problemCount < problems.length) {
+                const problem = problems[problemCount];
+                currentProblem.textContent = problem.text;
+                currentCount.textContent = problemCount + 1;
+                answerInput.value = '';
+                answerInput.focus();
+            } else {
+                endGame();
+            }
+        }
+        
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            
+            if (!isNaN(userAnswer)) {
+                const problem = problems[problemCount];
+                
+                if (userAnswer === problem.answer) {
+                    correctCount++;
+                }
+                
+                problemCount++;
+                showNextProblem();
+            }
+        }
+        
+        // Generate math problems
+        function generateProblems(count) {
+            const problems = [];
+            
+            for (let i = 0; i < count; i++) {
+                const problem = generateRandomProblem();
+                problems.push(problem);
+            }
+            
+            return problems;
+        }
+        
+        // Generate a random math problem
+        function generateRandomProblem() {
+            const operators = ['+', '-', '×', ':'];
+            const operator = operators[Math.floor(Math.random() * operators.length)];
+            
+            let num1, num2, answer, text;
+            
+            switch (operator) {
+                case '+': // Addition
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * 50) + 1;
+                    answer = num1 + num2;
+                    text = `${num1} + ${num2} = ?`;
+                    break;
+                    
+                case '-': // Subtraction
+                    num1 = Math.floor(Math.random() * 50) + 26; // Ensure positive result
+                    num2 = Math.floor(Math.random() * 25) + 1;
+                    answer = num1 - num2;
+                    text = `${num1} - ${num2} = ?`;
+                    break;
+                    
+                case '×': // Multiplication
+                    num1 = Math.floor(Math.random() * 12) + 1;
+                    num2 = Math.floor(Math.random() * 12) + 1;
+                    answer = num1 * num2;
+                    text = `${num1} × ${num2} = ?`;
+                    break;
+                    
+                case ':': // Division (using : instead of /)
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = Math.floor(Math.random() * 10) + 1;
+                    num1 = num2 * answer; // Ensure clean division
+                    text = `${num1} : ${num2} = ?`;
+                    break;
+            }
+            
+            return { text, answer };
+        }
+        
+        // End the game
+        function endGame() {
+            // Stop timer
+            clearInterval(gameInterval);
+            
+            // Show results phase
+            problemPhase.style.display = 'none';
+            resultsPhase.style.display = 'block';
+            backButton.style.display = 'none';
+            
+            // Update results
+            const minutes = Math.floor(gameTime / 60);
+            const seconds = gameTime % 60;
+            const timeString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            finalTime.textContent = timeString;
+            correctAnswers.textContent = correctCount;
+            
+            // Calculate XP based on time and correct answers
+            let xp = correctCount * 5; // Base XP: 5 per correct answer
+            
+            // Bonus XP based on time
+            if (gameTime < 120) { // Under 2 minutes
+                xp += 50;
+            } else if (gameTime < 150) { // Under 2:30
+                xp += 30;
+            } else if (gameTime < 180) { // Under 3 minutes
+                xp += 20;
+            } else if (gameTime < 240) { // Under 4 minutes
+                xp += 10;
+            }
+            
+            xpEarned.textContent = xp;
+            
+            // Save time record
+            saveTimeRecord(timeString, correctCount);
+            
+            // Display time records
+            displayTimeRecords();
+            
+            // Update user data
+            updateUserData(xp, correctCount);
+        }
+        
+        // Save time record
+        function saveTimeRecord(timeString, correctCount) {
+            // Get existing records
+            const savedRecords = localStorage.getItem('mathGameRecords');
+            let records = savedRecords ? JSON.parse(savedRecords) : [];
+            
+            // Add new record
+            records.push({
+                time: timeString,
+                timeSeconds: gameTime,
+                correctCount: correctCount,
+                date: new Date().toLocaleDateString()
+            });
+            
+            // Sort by time (ascending)
+            records.sort((a, b) => a.timeSeconds - b.timeSeconds);
+            
+            // Keep only top 5 records
+            if (records.length > 5) {
+                records = records.slice(0, 5);
+            }
+            
+            // Save records
+            localStorage.setItem('mathGameRecords', JSON.stringify(records));
+        }
+        
+        // Display time records
+        function displayTimeRecords() {
+            // Get records
+            const savedRecords = localStorage.getItem('mathGameRecords');
+            const records = savedRecords ? JSON.parse(savedRecords) : [];
+            
+            // Display records
+            timeRecords.innerHTML = '';
+            
+            if (records.length === 0) {
+                timeRecords.innerHTML = '<p>No records yet</p>';
+                return;
+            }
+            
+            records.forEach((record, index) => {
+                const recordElem = document.createElement('div');
+                recordElem.className = 'record-item';
+                recordElem.innerHTML = `${index + 1}. Time: <strong>${record.time}</strong> - Score: ${record.correctCount}/20 (${record.date})`;
+                
+                // Highlight if this is the current record
+                if (record.time === finalTime.textContent && record.correctCount === correctCount) {
+                    recordElem.style.color = '#4CAF50';
+                    recordElem.style.fontWeight = 'bold';
+                }
+                
+                timeRecords.appendChild(recordElem);
+            });
+        }
+        
+        // Update user data
+        function updateUserData(xp, correctAnswers) {
+            // Load user data
+            const savedData = localStorage.getItem('brainTrainingUserData');
+            let userData = savedData ? JSON.parse(savedData) : {
+                level: 1,
+                xp: 0,
+                lives: 5,
+                lastPlayed: new Date(),
+                stats: {
+                    intelligence: 10,
+                    sports: 5,
+                    languages: 3,
+                    energy: 8,
+                    creativity: 7,
+                    health: 10
+                },
+                equipment: {
+                    skin: 'light',
+                    outfit: 'casual',
+                    headgear: 'none',
+                    weapon: 'none'
+                },
+                achievements: {
+                    memoryMaster: false,
+                    mathWizard: false,
+                    dailyStreak: false
+                },
+                inventory: []
+            };
+            
+            // Add XP
+            userData.xp += xp;
+            
+            // Level up if enough XP
+            const xpNeeded = userData.level * 100;
+            if (userData.xp >= xpNeeded) {
+                userData.level++;
+                userData.xp -= xpNeeded;
+            }
+            
+            // Increase intelligence stat (1 point per 4 correct answers)
+            userData.stats.intelligence += Math.floor(correctAnswers / 4);
+            
+            // Check for math wizard achievement
+            if (correctAnswers >= 20 && gameTime < 60) {
+                userData.achievements.mathWizard = true;
+            }
+            
+            // Update last played time
+            userData.lastPlayed = new Date();
+            
+            // Save user data
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+        
+        // Event listeners
+        submitAnswerBtn.addEventListener('click', checkAnswer);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+        
+        playAgainBtn.addEventListener('click', initGame);
+        
+        backButton.addEventListener('click', function() {
+            if (confirm('Are you sure you want to go back? Your progress will be lost.')) {
+                clearInterval(countdownInterval);
+                clearInterval(gameInterval);
+                window.location.href = 'index.html';
+            }
+        });
+        
+        // Initialize game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
