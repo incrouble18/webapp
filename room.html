@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Customization</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="room.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="icon battle-icon" data-action="battle">
+                <i class="fas fa-swords"></i>
+                <span>Battle</span>
+            </div>
+        </div>
+
+        <h1>YOUR ROOM</h1>
+        
+        <div class="room-container">
+            <div class="room-canvas">
+                <!-- Room will be rendered here -->
+                <div class="room-wall"></div>
+                <div class="room-floor"></div>
+                
+                <!-- Placeholder items -->
+                <div id="room-bed" class="room-item room-bed" style="display: none;"></div>
+                <div id="room-desk" class="room-item room-desk" style="display: none;"></div>
+                <div id="room-bookshelf" class="room-item room-bookshelf" style="display: none;"></div>
+                <div id="room-plant" class="room-item room-plant" style="display: none;"></div>
+                <div id="room-poster" class="room-item room-poster" style="display: none;"></div>
+                <div id="room-lamp" class="room-item room-lamp" style="display: none;"></div>
+                <div id="room-rug" class="room-item room-rug" style="display: none;"></div>
+                <div id="room-computer" class="room-item room-computer" style="display: none;"></div>
+            </div>
+            
+            <div class="room-controls">
+                <div class="room-buffs">
+                    <h3>ROOM BUFFS</h3>
+                    <div id="room-buffs-list" class="buffs-list">
+                        <!-- Room buffs will be listed here -->
+                        <div class="no-buffs">Add items to your room to receive buffs!</div>
+                    </div>
+                </div>
+                
+                <div class="room-items-selector">
+                    <h3>ADD ITEMS</h3>
+                    <div class="items-grid">
+                        <div class="room-item-option" data-item="bed">
+                            <div class="item-icon">🛏️</div>
+                            <span>Bed</span>
+                        </div>
+                        <div class="room-item-option" data-item="desk">
+                            <div class="item-icon">🪑</div>
+                            <span>Desk</span>
+                        </div>
+                        <div class="room-item-option" data-item="bookshelf">
+                            <div class="item-icon">📚</div>
+                            <span>Bookshelf</span>
+                        </div>
+                        <div class="room-item-option" data-item="plant">
+                            <div class="item-icon">🌿</div>
+                            <span>Plant</span>
+                        </div>
+                        <div class="room-item-option" data-item="poster">
+                            <div class="item-icon">🖼️</div>
+                            <span>Poster</span>
+                        </div>
+                        <div class="room-item-option" data-item="lamp">
+                            <div class="item-icon">💡</div>
+                            <span>Lamp</span>
+                        </div>
+                        <div class="room-item-option" data-item="rug">
+                            <div class="item-icon">🧶</div>
+                            <span>Rug</span>
+                        </div>
+                        <div class="room-item-option" data-item="computer">
+                            <div class="item-icon">💻</div>
+                            <span>Computer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="room-themes">
+            <h3>ROOM THEMES</h3>
+            <div class="theme-options">
+                <button class="theme-option selected" data-theme="default">Default</button>
+                <button class="theme-option" data-theme="modern">Modern</button>
+                <button class="theme-option" data-theme="cozy">Cozy</button>
+                <button class="theme-option" data-theme="nature">Nature</button>
+                <button class="theme-option" data-theme="tech">Tech</button>
+            </div>
+        </div>
+        
+        <button id="back-to-menu" class="back-button">Back to Menu</button>
+    </div>
+
+    <script src="room.js"></script>
+</body>
+</html>

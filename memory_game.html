@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-screen">
+        <h2>MEMORY CHALLENGE</h2>
+        
+        <div id="timer" class="timer">2:00</div>
+        
+        <div id="memorize-phase">
+            <h3>Memorize these 30 words:</h3>
+            <div id="word-container" class="word-container"></div>
+        </div>
+        
+        <div id="recall-phase" style="display: none;">
+            <h3>Time's up!</h3>
+            <p>Type all the words you remember (separate with spaces or new lines):</p>
+            <textarea id="recall-input" rows="6" class="recall-input"></textarea>
+            <button id="submit-recall" class="action-button">Submit</button>
+        </div>
+        
+        <div id="results" style="display: none;">
+            <h3>Your Results</h3>
+            <p>Words correctly remembered: <span id="correct-count">0</span> / 30</p>
+            <p>XP earned: <span id="xp-earned">0</span></p>
+            <button class="back-button" onclick="window.location.href='index.html'">BACK TO MENU</button>
+        </div>
+    </div>
+
+    <script src="memory_game.js"></script>
+</body>
+</html>

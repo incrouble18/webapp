@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="battle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="icon battle-icon" data-action="battle">
+                <i class="fas fa-swords"></i>
+                <span>Battle</span>
+            </div>
+        </div>
+
+        <h1>BATTLE ARENA</h1>
+        
+        <div class="battle-container">
+            <div class="player-area">
+                <div class="player-character">
+                    <!-- Player character will be displayed here -->
+                    <div id="player-character" class="character-container">
+                        <div id="player-body" class="char-layer"></div>
+                        <div id="player-outfit" class="char-layer"></div>
+                        <div id="player-head" class="char-layer"></div>
+                        <div id="player-face" class="char-layer">
+                            <div id="player-mouth"></div>
+                        </div>
+                        <div id="player-headgear" class="char-layer"></div>
+                        <div id="player-weapon" class="char-layer"></div>
+                    </div>
+                    
+                    <div class="player-pet" style="display: none;">
+                        <!-- Pet will be displayed here if unlocked -->
+                        <div id="player-pet" class="pet-container">
+                            <div id="pet-body" class="pet-layer"></div>
+                            <div id="pet-head" class="pet-layer"></div>
+                            <div id="pet-face" class="pet-layer">
+                                <div id="pet-mouth"></div>
+                            </div>
+                            <div id="pet-accessory" class="pet-layer"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="health-bar">
+                        <div class="health-fill" id="player-health"></div>
+                    </div>
+                </div>
+                
+                <div class="player-actions">
+                    <button class="attack-button" data-attack="quick">Quick Attack</button>
+                    <button class="attack-button" data-attack="heavy">Heavy Attack</button>
+                    <button class="attack-button" data-attack="special">Special</button>
+                    <button class="attack-button" data-attack="defend">Defend</button>
+                </div>
+            </div>
+            
+            <div class="vs-indicator">VS</div>
+            
+            <div class="enemy-area">
+                <div class="enemy-character">
+                    <!-- Enemy will be displayed here -->
+                    <div id="enemy-character" class="enemy-container"></div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="enemy-health"></div>
+                    </div>
+                </div>
+                
+                <div class="enemy-info">
+                    <h3 id="enemy-name">Enemy Name</h3>
+                    <p id="enemy-level">Level: 1</p>
+                    <p id="enemy-type">Type: Normal</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="battle-log">
+            <h3>BATTLE LOG</h3>
+            <div id="battle-messages" class="battle-messages"></div>
+        </div>
+        
+        <div class="battle-controls">
+            <button id="start-battle" class="action-button">Start Battle</button>
+            <button id="back-to-menu" class="back-button">Back to Menu</button>
+        </div>
+    </div>
+
+    <script src="battle.js"></script>
+</body>
+</html>

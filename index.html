@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Training App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="icon battle-icon" data-action="battle">
+                <i class="fas fa-swords"></i>
+                <span>Battle</span>
+            </div>
+        </div>
+
+        <h1>DAILY TRAINING</h1>
+
+        <div class="game-list">
+            <div class="game-card">
+                <h2>MEMORY</h2>
+                <p>Remember 16 words in 2 minutes</p>
+                <img src="memory_start.png" class="start-button" data-game="memory" alt="Start Memory">
+            </div>
+
+            <div class="game-card">
+                <h2>MATH</h2>
+                <p>15 + 16 = ?</p>
+                <img src="math_start.png" class="start-button" data-game="math" alt="Start Math">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

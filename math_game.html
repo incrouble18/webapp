@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-screen">
+        <h2>MATH CHALLENGE</h2>
+        
+        <div id="start-screen">
+            <h3>Get Ready...</h3>
+            <div id="countdown">3</div>
+            <button class="back-button" onclick="window.location.href='math_intro.html'">BACK</button>
+        </div>
+        
+        <div id="game-area" style="display: none;">
+            <div id="timer" class="timer">00:00</div>
+            
+            <div class="problem-container">
+                <p>Problem: <span id="problem-number">1</span> / 20</p>
+                <div id="math-problem" class="math-problem"></div>
+                <input type="number" id="answer-input" class="answer-input" placeholder="?" autofocus>
+                <button id="submit-answer" class="action-button">Submit</button>
+            </div>
+        </div>
+        
+        <div id="results" style="display: none;">
+            <h3>Your Results</h3>
+            <p>Time: <span id="final-time">00:00</span></p>
+            <p>Correct answers: <span id="correct-count">0</span> / 20</p>
+            <p>XP earned: <span id="xp-earned">0</span></p>
+            
+            <div class="records">
+                <h3>Your Records</h3>
+                <div id="records-list"></div>
+            </div>
+            
+            <button class="back-button" onclick="window.location.href='index.html'">BACK TO MENU</button>
+        </div>
+    </div>
+
+    <script src="math_game.js"></script>
+</body>
+</html>
