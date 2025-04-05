@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge | Brain Training</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d8, #ff9a8b);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .game-area {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .word-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s;
+        }
+        
+        .word-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-primary {
+            background-color: #4e9af1;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a7ddb;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="container mx-auto max-w-lg p-6 rounded-xl shadow-lg text-center">
+        <h1 class="text-3xl font-bold mb-6 text-white uppercase tracking-wider">MEMORY CHALLENGE</h1>
+
+        <!-- Instructions Section -->
+        <div id="game-instructions" class="game-area rounded-lg p-6 mb-6">
+            <p class="text-white text-lg mb-4">You'll have 2 minutes to memorize 30 words.</p>
+            <p class="text-white text-lg mb-6">After the time is up, you'll need to recall as many as possible.</p>
+            <button id="start-memory-game" class="btn-primary text-white px-6 py-3 rounded-full font-bold text-lg">Start Game</button>
+        </div>
+
+        <!-- Game Area (Initially Hidden) -->
+        <div id="memory-game-area" class="game-area rounded-lg p-6 mb-6 hidden">
+            <div id="timer" class="text-white text-xl mb-4">Time: <span id="time-left">120</span>s</div>
+            <div id="word-container" class="grid grid-cols-3 gap-3 my-6"></div>
+        </div>
+
+        <!-- Recall Area (Initially Hidden) -->
+        <div id="recall-area" class="game-area rounded-lg p-6 mb-6 hidden">
+            <h2 class="text-xl font-bold text-white mb-4">Time's Up! Write down all the words you remember:</h2>
+            <textarea id="recalled-words" class="w-full p-3 rounded-lg mb-4 resize-none text-gray-700" rows="10" placeholder="Type one word per line or separate with commas"></textarea>
+            <button id="submit-recalled" class="btn-primary text-white px-6 py-3 rounded-full font-bold text-lg">Submit</button>
+        </div>
+
+        <!-- Results Area (Initially Hidden) -->
+        <div id="results-area" class="game-area rounded-lg p-6 mb-6 hidden">
+            <h2 class="text-2xl font-bold text-white mb-4">Your Results:</h2>
+            <p class="text-white text-xl mb-2">Words correctly remembered: <span id="correct-count">0</span>/30</p>
+            <p class="text-white text-xl mb-6">Experience gained: <span id="xp-gained">0</span> XP</p>
+            <button id="back-to-home" class="btn-primary text-white px-6 py-3 rounded-full font-bold text-lg">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App if available
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+
+        // DOM Elements
+        const gameInstructions = document.getElementById("game-instructions");
+        const memoryGameArea = document.getElementById("memory-game-area");
+        const recallArea = document.getElementById("recall-area");
+        const resultsArea = document.getElementById("results-area");
+        const startButton = document.getElementById("start-memory-game");
+        const wordContainer = document.getElementById("word-container");
+        const timeLeftSpan = document.getElementById("time-left");
+        const recalledWordsTextarea = document.getElementById("recalled-words");
+        const submitRecalledButton = document.getElementById("submit-recalled");
+        const correctCountSpan = document.getElementById("correct-count");
+        const xpGainedSpan = document.getElementById("xp-gained");
+        const backToHomeButton = document.getElementById("back-to-home");
+
+        // Game variables
+        let countdown;
+        let timeLeft = 120; // 2 minutes in seconds
+        let wordsList = [];
+        let correctWords = 0;
+        let xpGained = 0;
+
+        // List of words to choose from
+        const allPossibleWords = [
+            "Apple", "Book", "Cat", "Dog", "Elephant", "Flower", "Guitar", "House", "Ice", "Jacket",
+            "Key", "Lamp", "Mountain", "Night", "Ocean", "Piano", "Queen", "River", "Sun", "Tree",
+            "Umbrella", "Violin", "Water", "Xylophone", "Yellow", "Zebra", "Airplane", "Balloon", "Cloud", "Door",
+            "Eagle", "Fire", "Garden", "Hat", "Island", "Jungle", "Kangaroo", "Lion", "Moon", "Nest",
+            "Orange", "Pencil", "Quiet", "Rainbow", "Star", "Tiger", "Unicorn", "Vase", "Wind", "Yogurt"
+        ];
+
+        // User data from localStorage
+        let userData = {
+            level: 1,
+            xp: 0,
+            lives: 5,
+            lastPlayed: new Date(),
+            stats: {
+                intelligence: 10,
+                sports: 5,
+                languages: 3
+            },
+            inventory: []
+        };
+
+        // Load user data
+        function loadUserData() {
+            const savedData = localStorage.getItem('brainTrainingUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+            }
+        }
+
+        // Save user data
+        function saveUserData() {
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+
+        // Start the memory game
+        function startMemoryGame() {
+            gameInstructions.classList.add('hidden');
+            memoryGameArea.classList.remove('hidden');
+
+            // Reset game variables
+            timeLeft = 120;
+            wordsList = [];
+
+            // Select 30 random words
+            const shuffledWords = [...allPossibleWords].sort(() => 0.5 - Math.random());
+            wordsList = shuffledWords.slice(0, 30);
+
+            // Display words in the grid
+            wordContainer.innerHTML = "";
+            wordsList.forEach(word => {
+                const wordDiv = document.createElement("div");
+                wordDiv.className = "word-item p-3 rounded-lg font-semibold text-gray-800";
+                wordDiv.textContent = word;
+                wordContainer.appendChild(wordDiv);
+            });
+
+            // Start countdown
+            countdown = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        // Update timer display and check if time is up
+        function updateTimer() {
+            timeLeftSpan.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                memoryGameArea.classList.add('hidden');
+                recallArea.classList.remove('hidden');
+            } else {
+                timeLeft--;
+            }
+        }
+
+        // Check the recalled words and calculate score
+        function checkRecalledWords() {
+            const recalledText = recalledWordsTextarea.value.trim();
+            const recalledWordsList = recalledText.split(/\n|,|\s/).filter(word => word.trim() !== "");
+
+            // Convert to lowercase for case-insensitive comparison
+            const normalizedWordsList = wordsList.map(word => word.toLowerCase());
+            const normalizedRecalledList = recalledWordsList.map(word => word.toLowerCase());
+
+            // Count correct words
+            correctWords = 0;
+            normalizedRecalledList.forEach(word => {
+                if (normalizedWordsList.includes(word)) {
+                    correctWords++;
+                }
+            });
+
+            // Calculate XP gained (base 10 XP per correct word)
+            xpGained = correctWords * 10;
+
+            // Update user stats
+            loadUserData();
+            userData.xp += xpGained;
+            userData.stats.intelligence += Math.ceil(correctWords / 5); // Boost intelligence
+
+            // Level up check (simple formula: 100 XP per level)
+            const newLevel = Math.floor(userData.xp / 100) + 1;
+            if (newLevel > userData.level) {
+                userData.level = newLevel;
+                userData.lives++; // Bonus life on level up
+            }
+
+            saveUserData();
+
+            // Show results
+            correctCountSpan.textContent = correctWords;
+            xpGainedSpan.textContent = xpGained;
+            recallArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+        }
+
+        // Event Listeners
+        startButton.addEventListener("click", startMemoryGame);
+        submitRecalledButton.addEventListener("click", checkRecalledWords);
+        backToHomeButton.addEventListener("click", () => {
+            window.location.href = "index.html";
+        });
+
+        // Initialize the game
+        window.onload = function() {
+            loadUserData();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Training App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        /* Custom styles */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            transition: background 0.5s ease;
+        }
+        
+        .colorful-bg {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d8);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .dark-bg {
+            background-color: #222;
+            color: #f0f0f0;
+        }
+        
+        .light-bg {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .icon-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .icon {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+        
+        .icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .game-card {
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-card h2 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .game-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 12px;
+        }
+        
+        .start-btn {
+            background-color: #4e9af1;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .start-btn:hover {
+            background-color: #3a7ddb;
+            transform: scale(1.05);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        /* Theme switcher */
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .theme-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        /* Game area styles */
+        #memory-game-area, #math-game-area, #recall-area, #results-area {
+            display: none;
+        }
+        
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .word-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        #recalled-words {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 15px;
+            font-size: 1em;
+            min-height: 150px;
+        }
+        
+        /* Game counter styles */
+        .counter {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        /* Shake animation for wrong answers */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+    </style>
+</head>
+<body class="colorful-bg">
+    <div id="app-container" class="container">
+        <!-- Main Page -->
+        <div id="main-page">
+            <!-- Icon Navigation Bar -->
+            <div class="icon-container">
+                <div class="icon games-icon" data-action="games">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="purple" width="48" height="48">
+                        <path d="M21.43,12.97A2.14,2.14,0,0,0,19.29,11H18V10a1,1,0,0,0-1-1H7a1,1,0,0,0-1,1v1H4.71a2.14,2.14,0,0,0-2.14,1.97,10,10,0,0,0,0,4.06A2.14,2.14,0,0,0,4.71,18H6v1a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1V18h1.29a2.14,2.14,0,0,0,2.14-1.97A10,10,0,0,0,21.43,12.97ZM8,15H6V13H8Zm0-4H6V9H8Zm10,4H16V13h2Zm0-4H16V9h2Z"/>
+                    </svg>
+                </div>
+                <div class="icon stats-icon" data-action="stats">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1E90FF" width="48" height="48">
+                        <path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2ZM12,6a2,2,0,1,1-2,2A2,2,0,0,1,12,6Zm4,10a1,1,0,0,1-1,1H9a1,1,0,0,1-1-1v-.5a1,1,0,0,1,1-1h.5V12h-.5a1,1,0,0,1-1-1v-.5a1,1,0,0,1,1-1h3a1,1,0,0,1,1,1v3.5h.5a1,1,0,0,1,1,1Z"/>
+                    </svg>
+                </div>
+                <div class="icon room-icon" data-action="room">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF8C00" width="48" height="48">
+                        <path d="M21,10V19a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2V10L12,3Z M12,15a2,2,0,1,0-2-2A2,2,0,0,0,12,15Z"/>
+                    </svg>
+                </div>
+                <div class="icon inventory-icon" data-action="inventory">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF6347" width="48" height="48">
+                        <path d="M19,7H16V5.5A2.5,2.5,0,0,0,13.5,3h-3A2.5,2.5,0,0,0,8,5.5V7H5a2,2,0,0,0-2,2v9a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V9A2,2,0,0,0,19,7ZM10,5.5a.5.5,0,0,1,.5-.5h3a.5.5,0,0,1,.5.5V7H10Z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="text-3xl font-bold text-white uppercase tracking-wider mb-5">DAILY</h1>
+
+            <!-- Games List -->
+            <div class="game-list">
+                <!-- Memory Game Card -->
+                <div class="game-card">
+                    <h2>MEMORY</h2>
+                    <p>Remember 16 words in 2 minutes</p>
+                    <button class="start-btn" data-game="memory">START</button>
+                </div>
+
+                <!-- Math Game Card -->
+                <div class="game-card">
+                    <h2>MATH</h2>
+                    <p>15 + 16 = ?</p>
+                    <button class="start-btn" data-game="math">START</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Game Page -->
+        <div id="memory-game-area" class="game-area">
+            <h1 class="text-2xl font-bold text-white mb-4">MEMORY CHALLENGE</h1>
+            
+            <div id="memory-instructions" class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
+                <p class="text-white">You'll have 2 minutes to memorize 30 words.</p>
+                <p class="text-white mb-3">After the time is up, you'll need to recall as many as possible.</p>
+                <div class="counter">Time: <span id="memory-time-left">120</span>s</div>
+            </div>
+            
+            <div id="word-container" class="word-grid"></div>
+        </div>
+
+        <!-- Recall Area -->
+        <div id="recall-area" class="game-area">
+            <h2 class="text-xl font-bold text-white mb-4">Time's Up! Write down all the words you remember:</h2>
+            <textarea id="recalled-words" placeholder="Type one word per line or separate with commas"></textarea>
+            <button id="submit-recalled" class="start-btn">Submit</button>
+        </div>
+
+        <!-- Math Game Page -->
+        <div id="math-game-area" class="game-area">
+            <h1 class="text-2xl font-bold text-white mb-4">MATH CHALLENGE</h1>
+            
+            <div class="bg-white bg-opacity-20 rounded-lg p-4 mb-4">
+                <p class="text-white mb-3">Solve as many math problems as you can in 60 seconds!</p>
+                <div class="counter">Time: <span id="math-time-left">60</span>s</div>
+                <div class="counter">Score: <span id="current-score">0</span></div>
+            </div>
+            
+            <div id="current-problem" class="text-3xl font-bold text-white my-6">15 + 16 = ?</div>
+            
+            <div class="answer-area">
+                <input type="number" id="answer-input" placeholder="Answer" class="p-3 rounded-lg text-xl text-center w-32 mb-4">
+                <button id="submit-answer" class="start-btn">Submit</button>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results-area" class="game-area">
+            <h2 class="text-2xl font-bold text-white mb-4">Your Results</h2>
+            
+            <div class="bg-white bg-opacity-20 rounded-lg p-6 mb-4">
+                <p class="text-xl text-white mb-2" id="result-text"></p>
+                <p class="text-lg text-white">Experience gained: <span id="xp-gained">0</span> XP</p>
+            </div>
+            
+            <button id="back-to-home" class="start-btn">Back to Home</button>
+        </div>
+
+        <!-- Modal Dialog -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <p id="modal-message" class="text-lg my-4"></p>
+            </div>
+        </div>
+
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+            <button id="light-theme" class="theme-btn bg-gray-100 text-gray-800">Light</button>
+            <button id="dark-theme" class="theme-btn bg-gray-800 text-white">Dark</button>
+            <button id="colorful-theme" class="theme-btn" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white;">Color</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App compatibility
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+
+        // DOM Elements
+        const mainPage = document.getElementById("main-page");
+        const memoryGameArea = document.getElementById("memory-game-area");
+        const mathGameArea = document.getElementById("math-game-area");
+        const recallArea = document.getElementById("recall-area");
+        const resultsArea = document.getElementById("results-area");
+        const modal = document.getElementById("modal");
+        const modalMessage = document.getElementById("modal-message");
+        const closeModalBtn = document.querySelector(".close-btn");
+        
+        // Game elements - Memory
+        const wordContainer = document.getElementById("word-container");
+        const memoryTimeLeftSpan = document.getElementById("memory-time-left");
+        const recalledWordsTextarea = document.getElementById("recalled-words");
+        const submitRecalledButton = document.getElementById("submit-recalled");
+        
+        // Game elements - Math
+        const mathTimeLeftSpan = document.getElementById("math-time-left");
+        const currentScoreSpan = document.getElementById("current-score");
+        const currentProblemDiv = document.getElementById("current-problem");
+        const answerInput = document.getElementById("answer-input");
+        const submitAnswerButton = document.getElementById("submit-answer");
+        
+        // Results elements
+        const resultTextSpan = document.getElementById("result-text");
+        const xpGainedSpan = document.getElementById("xp-gained");
+        const backToHomeButton = document.getElementById("back-to-home");
+
+        // User data storage
+        let userData = {
+            level: 1,
+            xp: 0,
+            lives: 5,
+            lastPlayed: new Date(),
+            stats: {
+                intelligence: 10,
+                sports: 5,
+                languages: 3
+            },
+            inventory: []
+        };
+
+        // Game variables
+        let memoryCountdown;
+        let mathCountdown;
+        let memoryTimeLeft = 120; // 2 minutes
+        let mathTimeLeft = 60; // 1 minute
+        let wordsList = [];
+        let correctWords = 0;
+        let currentScore = 0;
+        let xpGained = 0;
+        let currentProblem = {};
+
+        // List of words for memory game
+        const allPossibleWords = [
+            "Apple", "Book", "Cat", "Dog", "Elephant", "Flower", "Guitar", "House", 
+            "Ice", "Jacket", "Key", "Lamp", "Mountain", "Night", "Ocean", "Piano", 
+            "Queen", "River", "Sun", "Tree", "Umbrella", "Violin", "Water", "Xylophone", 
+            "Yellow", "Zebra", "Airplane", "Balloon", "Cloud", "Door", "Eagle", "Fire", 
+            "Garden", "Hat", "Island", "Jungle", "Kangaroo", "Lion", "Moon", "Nest"
+        ];
+
+        // Load user data from localStorage
+        function loadUserData() {
+            const savedData = localStorage.getItem('brainTrainingUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+            }
+        }
+
+        // Save user data to localStorage
+        function saveUserData() {
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+
+        // Initialize the app
+        function initApp() {
+            loadUserData();
+            
+            // Check if it's been more than 24 hours since last played
+            const now = new Date();
+            const lastPlayed = new Date(userData.lastPlayed);
+            const daysSinceLastPlayed = Math.floor((now - lastPlayed) / (1000 * 60 * 60 * 24));
+            
+            if (daysSinceLastPlayed > 0) {
+                userData.lives = Math.min(5, Math.max(0, userData.lives - daysSinceLastPlayed));
+                if (userData.lives === 0) {
+                    showModal("⚠️ You've lost all your lives by not playing for " + daysSinceLastPlayed + " days! Complete challenges to earn lives.");
+                }
+            }
+            
+            userData.lastPlayed = now;
+            saveUserData();
+        }
+
+        // Show modal dialog
+        function showModal(message) {
+            modalMessage.textContent = message;
+            modal.style.display = "block";
+        }
+
+        // ----- MEMORY GAME FUNCTIONS -----
+
+        // Start the memory game
+        function startMemoryGame() {
+            mainPage.style.display = "none";
+            memoryGameArea.style.display = "block";
+            
+            // Reset game variables
+            memoryTimeLeft = 120;
+            wordsList = [];
+            
+            // Select 30 random words
+            const shuffledWords = [...allPossibleWords].sort(() => 0.5 - Math.random());
+            wordsList = shuffledWords.slice(0, 30);
+            
+            // Display words in the grid
+            wordContainer.innerHTML = "";
+            wordsList.forEach(word => {
+                const wordDiv = document.createElement("div");
+                wordDiv.className = "word-item";
+                wordDiv.textContent = word;
+                wordContainer.appendChild(wordDiv);
+            });
+            
+            // Start countdown
+            memoryCountdown = setInterval(updateMemoryTimer, 1000);
+            updateMemoryTimer();
+        }
+
+        // Update memory game timer
+        function updateMemoryTimer() {
+            memoryTimeLeftSpan.textContent = memoryTimeLeft;
+            
+            if (memoryTimeLeft <= 0) {
+                clearInterval(memoryCountdown);
+                memoryGameArea.style.display = "none";
+                recallArea.style.display = "block";
+            } else {
+                memoryTimeLeft--;
+            }
+        }
+
+        // Check the recalled words and calculate score
+        function checkRecalledWords() {
+            const recalledText = recalledWordsTextarea.value.trim();
+            const recalledWordsList = recalledText.split(/\n|,|\s/).filter(word => word.trim() !== "");
+            
+            // Convert to lowercase for case-insensitive comparison
+            const normalizedWordsList = wordsList.map(word => word.toLowerCase());
+            const normalizedRecalledList = recalledWordsList.map(word => word.toLowerCase());
+            
+            // Count correct words
+            correctWords = 0;
+            normalizedRecalledList.forEach(word => {
+                if (normalizedWordsList.includes(word)) {
+                    correctWords++;
+                }
+            });
+            
+            // Calculate XP gained (base 10 XP per correct word)
+            xpGained = correctWords * 10;
+            
+            // Update user stats
+            userData.xp += xpGained;
+            userData.stats.intelligence += Math.ceil(correctWords / 5); // Boost intelligence
+            
+            // Level up check (simple formula: 100 XP per level)
+            const newLevel = Math.floor(userData.xp / 100) + 1;
+            if (newLevel > userData.level) {
+                userData.level = newLevel;
+                userData.lives = Math.min(5, userData.lives + 1); // Bonus life on level up
+            }
+            
+            saveUserData();
+            
+            // Show results
+            resultTextSpan.textContent = `Words correctly remembered: ${correctWords}/30`;
+            xpGainedSpan.textContent = xpGained;
+            
+            recallArea.style.display = "none";
+            resultsArea.style.display = "block";
+        }
+
+        // ----- MATH GAME FUNCTIONS -----
+
+        // Generate a random math problem based on difficulty
+        function generateProblem() {
+            // Difficulty increases with player level
+            const difficulty = Math.min(10, Math.max(1, Math.floor(userData.level / 2)));
+            const operations = ['+', '-', '*'];
+            
+            let num1, num2, operation;
+            
+            // More complex problems for higher difficulty
+            if (difficulty > 5) {
+                num1 = Math.floor(Math.random() * difficulty * 10);
+                num2 = Math.floor(Math.random() * difficulty * 5);
+                operation = operations[Math.floor(Math.random() * operations.length)];
+            } else {
+                num1 = Math.floor(Math.random() * difficulty * 10);
+                num2 = Math.floor(Math.random() * difficulty * 10);
+                operation = operations[Math.floor(Math.random() * 2)]; // Only + and - for lower difficulty
+            }
+            
+            // Ensure subtraction doesn't result in negative for beginners
+            if (operation === '-' && difficulty < 3 && num2 > num1) {
+                [num1, num2] = [num2, num1]; // Swap numbers
+            }
+            
+            let answer;
+            let problemText;
+            
+            switch (operation) {
+                case '+':
+                    answer = num1 + num2;
+                    problemText = `${num1} + ${num2} = ?`;
+                    break;
+                case '-':
+                    answer = num1 - num2;
+                    problemText = `${num1} - ${num2} = ?`;
+                    break;
+                case '*':
+                    answer = num1 * num2;
+                    problemText = `${num1} × ${num2} = ?`;
+                    break;
+            }
+            
+            return {
+                text: problemText,
+                answer: answer
+            };
+        }
+
+        // Start the math game
+        function startMathGame() {
+            mainPage.style.display = "none";
+            mathGameArea.style.display = "block";
+            
+            // Reset game variables
+            mathTimeLeft = 60;
+            currentScore = 0;
+            currentScoreSpan.textContent = currentScore;
+            
+            // Generate first problem
+            currentProblem = generateProblem();
+            currentProblemDiv.textContent = currentProblem.text;
+            answerInput.value = "";
+            answerInput.focus();
+            
+            // Start countdown
+            mathCountdown = setInterval(updateMathTimer, 1000);
+            updateMathTimer();
+        }
+
+        // Update math game timer
+        function updateMathTimer() {
+            mathTimeLeftSpan.textContent = mathTimeLeft;
+            
+            if (mathTimeLeft <= 0) {
+                clearInterval(mathCountdown);
+                endMathGame();
+            } else {
+                mathTimeLeft--;
+            }
+        }
+
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            
+            if (!isNaN(userAnswer) && userAnswer === currentProblem.answer) {
+                // Correct answer
+                currentScore++;
+                currentScoreSpan.textContent = currentScore;
+                
+                // Generate new problem
+                currentProblem = generateProblem();
+                currentProblemDiv.textContent = currentProblem.text;
+                answerInput.value = "";
+                answerInput.focus();
+            } else {
+                // Incorrect answer - shake the input
+                answerInput.classList.add("shake");
+                setTimeout(() => {
+                    answerInput.classList.remove("shake");
+                }, 500);
+            }
+        }
+
+        // End the math game and show results
+        function endMathGame() {
+            mathGameArea.style.display = "none";
+            
+            // Calculate XP gained (20 XP per correct answer)
+            xpGained = currentScore * 20;
+            
+            // Update user stats
+            userData.xp += xpGained;
+            userData.stats.intelligence += Math.ceil(currentScore / 3); // Boost intelligence
+            
+            // Level up check (simple formula: 100 XP per level)
+            const newLevel = Math.floor(userData.xp / 100) + 1;
+            if (newLevel > userData.level) {
+                userData.level = newLevel;
+                userData.lives = Math.min(5, userData.lives + 1); // Bonus life on level up
+            }
+            
+            saveUserData();
+            
+            // Show results
+            resultTextSpan.textContent = `Your final score: ${currentScore}`;
+            xpGainedSpan.textContent = xpGained;
+            
+            resultsArea.style.display = "block";
+        }
+
+        // ----- EVENT LISTENERS -----
+
+        // Close modal when clicking on X
+        closeModalBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        // Handle icon clicks
+        document.querySelectorAll(".icon").forEach(icon => {
+            icon.addEventListener("click", function() {
+                const action = this.getAttribute("data-action");
+                if (action === "inventory") {
+                    showModal("🎒 Inventory is under development. Here you'll manage your items, artifacts, and collectibles.");
+                } else if (action === "games") {
+                    showModal("🎮 You're already in the Game World!");
+                } else if (action === "room") {
+                    showModal("🏠 Room customization is under development. You'll be able to decorate your space for bonuses!");
+                } else if (action === "stats") {
+                    // Generate stats display
+                    let statsMessage = `📊 YOUR STATS\n\nLevel: ${userData.level}\nXP: ${userData.xp}\nLives: ${userData.lives}\n\nAttributes:\n`;
+                    for (const [key, value] of Object.entries(userData.stats)) {
+                        statsMessage += `- ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}\n`;
+                    }
+                    showModal(statsMessage);
+                }
+            });
+        });
+
+        // Handle START buttons
+        document.querySelectorAll(".start-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const gameType = this.getAttribute("data-game");
+                if (gameType === "memory") {
+                    startMemoryGame();
+                } else if (gameType === "math") {
+                    startMathGame();
+                }
+            });
+        });
+
+        // Memory game - Submit recalled words
+        submitRecalledButton.addEventListener("click", checkRecalledWords);
+
+        // Math game - Submit answer
+        submitAnswerButton.addEventListener("click", checkAnswer);
+        
+        // Math game - Submit answer with Enter key
+        answerInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+
+        // Back to home button
+        backToHomeButton.addEventListener("click", function() {
+            resultsArea.style.display = "none";
+            mainPage.style.display = "block";
+        });
+
+        // Theme switcher functionality
+        document.getElementById("light-theme").addEventListener("click", function() {
+            document.body.className = "light-bg";
+            localStorage.setItem("preferred-theme", "light");
+        });
+
+        document.getElementById("dark-theme").addEventListener("click", function() {
+            document.body.className = "dark-bg";
+            localStorage.setItem("preferred-theme", "dark");
+        });
+
+        document.getElementById("colorful-theme").addEventListener("click", function() {
+            document.body.className = "colorful-bg";
+            localStorage.setItem("preferred-theme", "colorful");
+        });
+
+        // Load saved theme preference
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem("preferred-theme");
+            if (savedTheme) {
+                if (savedTheme === "light") {
+                    document.body.className = "light-bg";
+                } else if (savedTheme === "dark") {
+                    document.body.className = "dark-bg";
+                } else {
+                    document.body.className = "colorful-bg";
+                }
+            } else {
+                // Default to colorful theme
+                document.body.className = "colorful-bg";
+            }
+        }
+
+        // Initialize the app when the page loads
+        window.onload = function() {
+            initApp();
+            loadThemePreference();
+        };
+    </script>
+</body>
+</html>
