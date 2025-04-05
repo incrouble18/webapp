@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .word-display {
+            font-size: 2.5em;
+            margin: 40px 0;
+            color: white;
+            min-height: 80px;
+        }
+        
+        .timer {
+            font-size: 1.5em;
+            color: white;
+            margin: 20px 0;
+        }
+        
+        .memory-input {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .memory-input textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-screen">
+            <h1>MEMORY CHALLENGE</h1>
+            
+            <div class="timer" id="timer">Time: 2:00</div>
+            
+            <div class="word-display" id="word-display">Get Ready...</div>
+            
+            <div class="memory-input" id="memory-input">
+                <p>Time's up! Type all the words you remember (separate with spaces or new lines):</p>
+                <textarea id="recalled-words" placeholder="Type words here..."></textarea>
+                <button class="submit-btn" id="submit-words">SUBMIT</button>
+            </div>
+            
+            <div id="results" style="display: none;">
+                <h2>Your Results</h2>
+                <p id="score-display"></p>
+                <p id="correct-words"></p>
+                <p id="missed-words"></p>
+                <button class="back-button" onclick="window.location.href='index.html'">BACK TO MENU</button>
+            </div>
+            
+            <button class="back-button" id="back-button" onclick="confirmExit()">QUIT</button>
+        </div>
+    </div>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Initialize Telegram Web App
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+        
+        // Word bank for memory game
+        const wordBank = [
+            "apple", "beach", "cloud", "dance", "eagle", "flame", "garden", "honey",
+            "island", "jungle", "kite", "lemon", "mountain", "novel", "ocean", "piano",
+            "queen", "river", "sunset", "tiger", "umbrella", "village", "window", "xylophone",
+            "yellow", "zebra", "autumn", "bread", "candle", "diamond", "elephant", "forest",
+            "guitar", "harbor", "jacket", "kitchen", "laptop", "mirror", "nectar", "orange",
+            "pencil", "quilt", "rainbow", "silver", "temple", "unicorn", "violet", "whisper",
+            "crystal", "treasure", "blossom", "cascade", "dazzle", "emerald", "falcon", "galaxy"
+        ];
+        
+        // Game variables
+        let gameWords = [];
+        let displayedWords = [];
+        let timer;
+        let timeLeft = 120; // 2 minutes in seconds
+        let gamePhase = "preparation"; // preparation, display, recall, results
+        
+        // DOM elements
+        const timerDisplay = document.getElementById('timer');
+        const wordDisplay = document.getElementById('word-display');
+        const memoryInput = document.getElementById('memory-input');
+        const backButton = document.getElementById('back-button');
+        const resultsDiv = document.getElementById('results');
+        
+        // Theme handling
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem("preferred-theme");
+            if (savedTheme) {
+                document.body.className = savedTheme + "-theme";
+            } else {
+                document.body.className = "colorful-theme";
+            }
+        }
+        
+        // Start the game
+        function startGame() {
+            // Select 16 random words from the word bank
+            gameWords = [];
+            while (gameWords.length < 16) {
+                const randomIndex = Math.floor(Math.random() * wordBank.length);
+                const word = wordBank[randomIndex];
+                if (!gameWords.includes(word)) {
+                    gameWords.push(word);
+                }
+            }
+            
+            // Start the word display sequence
+            gamePhase = "display";
+            displayWordSequence();
+        }
+        
+        // Display words one by one
+        function displayWordSequence() {
+            let currentIndex = 0;
+            
+            // Function to display the next word
+            function showNextWord() {
+                if (currentIndex < gameWords.length) {
+                    wordDisplay.textContent = gameWords[currentIndex];
+                    displayedWords.push(gameWords[currentIndex]);
+                    currentIndex++;
+                    
+                    // Schedule the next word after 2.5 seconds
+                    setTimeout(() => {
+                        // Short blank period between words
+                        wordDisplay.textContent = "";
+                        setTimeout(showNextWord, 500);
+                    }, 2000);
+                } else {
+                    // All words displayed, start recall phase
+                    startRecallPhase();
+                }
+            }
+            
+            // Start showing words
+            showNextWord();
+        }
+        
+        // Start the recall phase
+        function startRecallPhase() {
+            gamePhase = "recall";
+            wordDisplay.style.display = "none";
+            memoryInput.style.display = "block";
+            
+            // Start timer for recall phase
+            timeLeft = 120; // 2 minutes
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('submit-words').click(); // Auto-submit when time's up
+                }
+            }, 1000);
+            
+            // Handle submission
+            document.getElementById('submit-words').addEventListener('click', evaluateResults);
+        }
+        
+        // Evaluate user's recalled words
+        function evaluateResults() {
+            clearInterval(timer);
+            
+            const userInput = document.getElementById('recalled-words').value;
+            const userWords = userInput.toLowerCase().split(/[\s,\n]+/).filter(word => word.trim() !== '');
+            
+            // Find correct and missed words
+            const correctWords = userWords.filter(word => gameWords.includes(word));
+            const uniqueCorrectWords = [...new Set(correctWords)]; // Remove duplicates
+            const missedWords = gameWords.filter(word => !uniqueCorrectWords.includes(word));
+            
+            // Calculate score
+            const score = uniqueCorrectWords.length;
+            
+            // Display results
+            memoryInput.style.display = "none";
+            resultsDiv.style.display = "block";
+            
+            document.getElementById('score-display').textContent = `You remembered ${score} out of 16 words!`;
+            
+            if (uniqueCorrectWords.length > 0) {
+                document.getElementById('correct-words').innerHTML = `<strong>Correct words:</strong> ${uniqueCorrectWords.join(', ')}`;
+            } else {
+                document.getElementById('correct-words').textContent = "You didn't remember any words correctly.";
+            }
+            
+            if (missedWords.length > 0) {
+                document.getElementById('missed-words').innerHTML = `<strong>Missed words:</strong> ${missedWords.join(', ')}`;
+            }
+            
+            // Update user data
+            updateUserStats(score);
+            
+            gamePhase = "results";
+            backButton.style.display = "none";
+        }
+        
+        // Update user stats based on performance
+        function updateUserStats(score) {
+            // Load current user data
+            let userData = JSON.parse(localStorage.getItem('brainTrainingUserData')) || {
+                level: 1,
+                xp: 0,
+                stats: { intelligence: 10 }
+            };
+            
+            // Award XP based on score
+            const xpGained = score * 5;
+            userData.xp += xpGained;
+            
+            // Increase intelligence based on score
+            if (score >= 10) {
+                userData.stats.intelligence += 1;
+            }
+            
+            // Level up if enough XP
+            if (userData.xp >= userData.level * 100) {
+                userData.level++;
+                userData.xp %= 100;
+            }
+            
+            // Save updated data
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Confirm before quitting
+        function confirmExit() {
+            if (gamePhase === "display" || gamePhase === "recall") {
+                if (confirm("Are you sure you want to quit? Your progress will be lost.")) {
+                    window.location.href = 'index.html';
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            loadThemePreference();
+            
+            // Short countdown before starting
+            let countdown = 3;
+            wordDisplay.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    wordDisplay.textContent = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                    startGame();
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .problem-display {
+            font-size: 2.5em;
+            margin: 40px 0;
+            color: white;
+            min-height: 80px;
+        }
+        
+        .timer {
+            font-size: 1.5em;
+            color: white;
+            margin: 20px 0;
+        }
+        
+        .answer-input {
+            margin: 20px 0;
+        }
+        
+        .answer-input input {
+            width: 150px;
+            padding: 10px;
+            font-size: 1.5em;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+        }
+        
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .feedback {
+            font-size: 1.2em;
+            color: white;
+            min-height: 30px;
+            margin: 10px 0;
+        }
+        
+        .score {
+            font-size: 1.5em;
+            color: white;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-screen">
+            <h1>MATH CHALLENGE</h1>
+            
+            <div class="timer" id="timer">Time: 1:00</div>
+            <div class="score" id="score">Score: 0</div>
+            
+            <div class="problem-display" id="problem-display">Get Ready...</div>
+            
+            <div class="answer-input" id="answer-input" style="display: none;">
+                <input type="number" id="user-answer" placeholder="?" autofocus>
+                <button class="submit-btn" id="submit-answer">SUBMIT</button>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div id="results" style="display: none;">
+                <h2>Your Results</h2>
+                <p id="final-score"></p>
+                <p id="problems-solved"></p>
+                <button class="back-button" onclick="window.location.href='index.html'">BACK TO MENU</button>
+            </div>
+            
+            <button class="back-button" id="back-button" onclick="confirmExit()">QUIT</button>
+        </div>
+    </div>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Initialize Telegram Web App
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+        
+        // Game variables
+        let score = 0;
+        let problemsSolved = 0;
+        let currentProblem = {};
+        let timer;
+        let timeLeft = 60; // 1 minute in seconds
+        let gameActive = false;
+        
+        // DOM elements
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score');
+        const problemDisplay = document.getElementById('problem-display');
+        const answerInput = document.getElementById('answer-input');
+        const userAnswerField = document.getElementById('user-answer');
+        const submitButton = document.getElementById('submit-answer');
+        const feedbackDisplay = document.getElementById('feedback');
+        const resultsDiv = document.getElementById('results');
+        const backButton = document.getElementById('back-button');
+        
+        // Theme handling
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem("preferred-theme");
+            if (savedTheme) {
+                document.body.className = savedTheme + "-theme";
+            } else {
+                document.body.className = "colorful-theme";
+            }
+        }
+        
+        // Generate a random math problem
+        function generateProblem() {
+            const operations = ['+', '-', '*', '/'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            
+            let num1, num2, answer;
+            
+            switch(operation) {
+                case '+': // Addition
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * 50) + 1;
+                    answer = num1 + num2;
+                    break;
+                case '-': // Subtraction (ensure positive result)
+                    num1 = Math.floor(Math.random() * 50) + 50;
+                    num2 = Math.floor(Math.random() * 50) + 1;
+                    answer = num1 - num2;
+                    break;
+                case '*': // Multiplication (keep it simple)
+                    num1 = Math.floor(Math.random() * 12) + 1;
+                    num2 = Math.floor(Math.random() * 12) + 1;
+                    answer = num1 * num2;
+                    break;
+                case '/': // Division (
+ case '/': // Division (ensure whole number result)
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = Math.floor(Math.random() * 10) + 1;
+                    num1 = num2 * answer; // This ensures clean division
+                    break;
+            }
+            
+            return {
+                num1,
+                num2,
+                operation,
+                problem: `${num1} ${operation} ${num2}`,
+                answer
+            };
+        }
+        
+        // Start the game
+        function startGame() {
+            gameActive = true;
+            score = 0;
+            problemsSolved = 0;
+            
+            // Show answer input
+            answerInput.style.display = "block";
+            userAnswerField.focus();
+            
+            // Update score display
+            scoreDisplay.textContent = `Score: ${score}`;
+            
+            // Set up first problem
+            nextProblem();
+            
+            // Start timer
+            timeLeft = 60;
+            updateTimerDisplay();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+            
+            // Set up submit button
+            submitButton.addEventListener('click', checkAnswer);
+            
+            // Allow Enter key to submit answer
+            userAnswerField.addEventListener('keyup', function(event) {
+                if (event.key === "Enter") {
+                    checkAnswer();
+                }
+            });
+        }
+        
+        // Go to next problem
+        function nextProblem() {
+            currentProblem = generateProblem();
+            problemDisplay.textContent = currentProblem.problem + " = ?";
+            userAnswerField.value = "";
+            userAnswerField.focus();
+            feedbackDisplay.textContent = "";
+        }
+        
+        // Check user's answer
+        function checkAnswer() {
+            if (!gameActive) return;
+            
+            const userAnswer = parseInt(userAnswerField.value, 10);
+            
+            if (isNaN(userAnswer)) {
+                feedbackDisplay.textContent = "Please enter a number!";
+                return;
+            }
+            
+            if (userAnswer === currentProblem.answer) {
+                // Correct answer
+                score += 10;
+                problemsSolved++;
+                feedbackDisplay.textContent = "✓ Correct!";
+                feedbackDisplay.style.color = "#4CAF50";
+            } else {
+                // Wrong answer
+                feedbackDisplay.textContent = "✗ Wrong! The correct answer is " + currentProblem.answer;
+                feedbackDisplay.style.color = "#f44336";
+            }
+            
+            // Update score display
+            scoreDisplay.textContent = `Score: ${score}`;
+            
+            // Short delay before next problem
+            setTimeout(nextProblem, 1000);
+        }
+        
+        // End the game
+        function endGame() {
+            clearInterval(timer);
+            gameActive = false;
+            
+            // Hide game elements
+            answerInput.style.display = "none";
+            backButton.style.display = "none";
+            
+            // Show results
+            resultsDiv.style.display = "block";
+            document.getElementById('final-score').textContent = `Final Score: ${score}`;
+            document.getElementById('problems-solved').textContent = `Problems Solved: ${problemsSolved}`;
+            
+            // Update user stats
+            updateUserStats(score, problemsSolved);
+        }
+        
+        // Update user stats based on performance
+        function updateUserStats(score, problemsSolved) {
+            // Load current user data
+            let userData = JSON.parse(localStorage.getItem('brainTrainingUserData')) || {
+                level: 1,
+                xp: 0,
+                stats: { intelligence: 10 }
+            };
+            
+            // Award XP based on score
+            const xpGained = Math.floor(score / 10);
+            userData.xp += xpGained;
+            
+            // Increase intelligence based on performance
+            if (problemsSolved >= 15) {
+                userData.stats.intelligence += 1;
+            }
+            
+            // Level up if enough XP
+            if (userData.xp >= userData.level * 100) {
+                userData.level++;
+                userData.xp %= 100;
+            }
+            
+            // Save updated data
+            localStorage.setItem('brainTrainingUserData', JSON.stringify(userData));
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Confirm before quitting
+        function confirmExit() {
+            if (gameActive) {
+                if (confirm("Are you sure you want to quit? Your progress will be lost.")) {
+                    clearInterval(timer);
+                    window.location.href = 'index.html';
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Initialize
+        window.onload = function() {
+            loadThemePreference();
+            
+            // Short countdown before starting
+            let countdown = 3;
+            problemDisplay.textContent = countdown;
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    problemDisplay.textContent = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                    startGame();
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

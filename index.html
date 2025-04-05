@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Training App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Icons -->
+        <div class="icon-bar">
+            <img src="games.png" alt="Games" class="icon" data-action="games">
+            <img src="stats.png" alt="Stats" class="icon" data-action="stats">
+            <img src="room.png" alt="Room" class="icon" data-action="room">
+            <img src="inventory.png" alt="Inventory" class="icon" data-action="inventory">
+        </div>
+
+        <h1>DAILY</h1>
+
+        <div class="game-list">
+            <!-- Memory Game Card -->
+            <div class="game-card">
+                <h2>MEMORY</h2>
+                <p>Remember 16 words in 2 minutes</p>
+                <img src="memory_start.png" alt="Start Memory Game" class="start-button" data-game="memory">
+            </div>
+
+            <!-- Math Game Card -->
+            <div class="game-card">
+                <h2>MATH</h2>
+                <p>15 + 16 = ?</p>
+                <img src="math_start.png" alt="Start Math Game" class="start-button" data-game="math">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <!-- Theme Switcher (hidden) -->
+    <div class="theme-switcher" style="display: none;">
+        <button id="light-theme">Light</button>
+        <button id="dark-theme">Dark</button>
+        <button id="colorful-theme">Colorful</button>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
