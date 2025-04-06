@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Customization</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="character.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="icon battle-icon" data-action="battle">
+                <i class="fas fa-swords"></i>
+                <span>Battle</span>
+            </div>
+        </div>
+
+        <h1>PET CUSTOMIZATION</h1>
+        
+        <div class="pet-container">
+            <div id="pet-locked" class="pet-locked">
+                <img src="pet_locked.png" alt="Locked Pet" class="pet-locked-img">
+                <p>Unlock a pet from the inventory to customize it!</p>
+            </div>
+            
+            <div id="pet-unlocked" class="pet-unlocked" style="display: none;">
+                <div id="pet-base" class="
+                 <div id="pet-base" class="pet-container">
+                    <div id="pet-body" class="pet-layer"></div>
+                    <div id="pet-head" class="pet-layer"></div>
+                    <div id="pet-face" class="pet-layer">
+                        <div id="pet-mouth"></div>
+                    </div>
+                    <div id="pet-accessory" class="pet-layer"></div>
+                </div>
+                
+                <div class="pet-customization-options">
+                    <h3>Pet Type</h3>
+                    <div class="options-container">
+                        <button class="option-button selected" data-type="cat">Cat</button>
+                        <button class="option-button" data-type="dog">Dog</button>
+                        <button class="option-button" data-type="dragon">Dragon</button>
+                        <button class="option-button" data-type="bird">Bird</button>
+                    </div>
+                    
+                    <h3>Pet Color</h3>
+                    <div class="options-container">
+                        <button class="option-button selected" data-color="default">Default</button>
+                        <button class="option-button" data-color="black">Black</button>
+                        <button class="option-button" data-color="white">White</button>
+                        <button class="option-button" data-color="gold">Gold</button>
+                        <button class="option-button" data-color="blue">Blue</button>
+                    </div>
+                    
+                    <h3>Pet Accessory</h3>
+                    <div class="options-container">
+                        <button class="option-button selected" data-accessory="none">None</button>
+                        <button class="option-button" data-accessory="bow">Bow</button>
+                        <button class="option-button" data-accessory="hat">Hat</button>
+                        <button class="option-button" data-accessory="glasses">Glasses</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pet-stats">
+            <h3>PET ABILITIES</h3>
+            <div class="pet-ability">
+                <span>Loyalty</span>
+                <div class="ability-bar">
+                    <div class="ability-fill" style="width: 50%"></div>
+                </div>
+            </div>
+            <div class="pet-ability">
+                <span>Intelligence</span>
+                <div class="ability-bar">
+                    <div class="ability-fill" style="width: 70%"></div>
+                </div>
+            </div>
+            <div class="pet-ability">
+                <span>Speed</span>
+                <div class="ability-bar">
+                    <div class="ability-fill" style="width: 60%"></div>
+                </div>
+            </div>
+            <div class="pet-ability">
+                <span>Strength</span>
+                <div class="ability-bar">
+                    <div class="ability-fill" style="width: 40%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-switcher reverse">
+            <button id="to-character-page" class="page-switch-button">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+        
+        <button id="back-to-stats" class="back-button">Back to Stats</button>
+    </div>
+
+    <script src="pet_customization.js"></script>
+</body>
+</html>
