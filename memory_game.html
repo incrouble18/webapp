@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="battle-icon" data-action="battle">
+                <i>⚔️</i>
+                Battle
+            </div>
+        </div>
+
+        <div id="memorize-phase" class="game-screen">
+            <h2>MEMORY CHALLENGE</h2>
+            <div class="timer" id="timer">2:00</div>
+            <h3>Memorize these 30 words:</h3>
+            <div id="word-container" class="word-container"></div>
+            <button id="cancel-memory" class="back-button">Cancel</button>
+        </div>
+
+        <div id="recall-phase" class="game-screen" style="display:none;">
+            <h2>Time's up!</h2>
+            <p>Type all the words you remember (separate with spaces or new lines):</p>
+            <textarea id="recall-input" class="recall-input"></textarea>
+            <button id="submit-recall" class="action-button">Submit</button>
+            <button id="cancel-recall" class="back-button">Cancel</button>
+        </div>
+
+        <div id="results" class="game-screen" style="display:none;">
+            <h2>Your Results</h2>
+            <p>Words correctly remembered: <span id="correct-count">0</span> / 30</p>
+            <p>XP earned: <span id="xp-earned">0</span></p>
+            <button id="back-to-menu" class="back-button">Back to Menu</button>
+        </div>
+    </div>
+
+    <script src="memory_game.js"></script>
+</body>
+</html>

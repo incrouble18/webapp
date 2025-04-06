@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="character.css">
+    <link rel="stylesheet" href="battle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <img src="games.png" class="icon" data-action="games" alt="Games">
+            <img src="inventory.png" class="icon" data-action="inventory" alt="Inventory">
+            <img src="room.png" class="icon" data-action="room" alt="Room">
+            <img src="stats.png" class="icon" data-action="stats" alt="Stats">
+            <div class="battle-icon" data-action="battle">⚔️<span>Battle</span></div>
+        </div>
+        
+        <h1>⚔️ Battle Arena</h1>
+        
+        <div class="battle-container">
+            <div class="player-area">
+                <div id="player-character" class="character-container"></div>
+                <div class="health-bar">
+                    <div id="player-health" class="health-fill"></div>
+                </div>
+            </div>
+            
+            <div class="vs-indicator">VS</div>
+            
+            <div class="enemy-area">
+                <div id="enemy-character" class="enemy-container"></div>
+                <div class="health-bar">
+                    <div id="enemy-health" class="health-fill"></div>
+                </div>
+                <div class="enemy-info">
+                    <div id="enemy-name">Enemy</div>
+                    <div id="enemy-level">Level: 1</div>
+                    <div id="enemy-type">Type: Normal</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="healing-orb" class="healing-orb" style="display: none;">+</div>
+        
+        <div class="battle-log">
+            <h3>Battle Log</h3>
+            <div id="battle-messages" class="battle-messages"></div>
+        </div>
+        
+        <div class="button-container">
+            <button id="start-battle" class="action-button">Start Battle</button>
+            <button id="back-to-menu" class="back-button">Back to Menu</button>
+        </div>
+    </div>
+    
+    <script src="battle.js"></script>
+</body>
+</html>
