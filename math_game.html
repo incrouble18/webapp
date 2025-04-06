@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <div class="icon games" data-action="games">
+                <img src="games_icon.png" alt="Games">
+            </div>
+            <div class="icon stats" data-action="stats">
+                <img src="stats_icon.png" alt="Stats">
+            </div>
+            <div class="icon room" data-action="room">
+                <img src="room_icon.png" alt="Room">
+            </div>
+            <div class="icon inventory" data-action="inventory">
+                <img src="inventory_icon.png" alt="Inventory">
+            </div>
+            <div class="battle-icon" data-action="battle">
+                ⚔️<br>Battle
+            </div>
+        </div>
+        
+        <h1>MATH CHALLENGE</h1>
+        
+        <div id="start-screen">
+            <div class="timer" id="countdown">Get Ready...</div>
+            <button id="cancel-math" class="back-button">Cancel</button>
+        </div>
+        
+        <div id="game-area" style="display: none;">
+            <div class="timer" id="timer">00:00</div>
+            <div id="problem-number">Problem: 1 / 20</div>
+            
+            <div class="math-problem" id="math-problem"></div>
+            
+            <input type="number" id="answer-input" class="answer-input" placeholder="?">
+            
+            <div class="button-container">
+                <button id="cancel" class="back-button">Cancel</button>
+                <button id="submit-answer" class="action-button">Submit</button>
+            </div>
+        </div>
+        
+        <div id="results" style="display: none;">
+            <h2>Your Results</h2>
+            <p>Time: <span id="final-time">00:00</span></p>
+            <p>Correct answers: <span id="correct-count">0</span> / 20</p>
+            <p>XP earned: <span id="xp-earned">0</span></p>
+            
+            <h3>Your Records</h3>
+            <div id="records-list"></div>
+            
+            <button id="back-to-menu" class="back-button">Back to Menu</button>
+        </div>
+    </div>
+    
+    <script src="math_game.js"></script>
+</body>
+</html>

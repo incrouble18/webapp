@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Battle Arena</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="battle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="icon-bar">
+            <div class="icon" data-action="games">🎮</div>
+            <div class="icon" data-action="stats">📊</div>
+            <div class="icon" data-action="room">🏠</div>
+            <div class="icon" data-action="inventory">🎒</div>
+            <div class="icon" data-action="battle">⚔️</div>
+        </div>
+        
+        <h1>⚔️ Battle Arena</h1>
+        
+        <div class="battle-container">
+            <div class="player-area">
+                <div id="player-character" class="character-container">
+                    <!-- Player character layers will be added via JS -->
+                </div>
+                <div class="health-bar">
+                    <div id="player-health" class="health-fill"></div>
+                </div>
+            </div>
+            
+            <div class="vs-indicator">VS</div>
+            
+            <div class="enemy-area">
+                <div class="enemy-info">
+                    <h3 id="enemy-name">Enemy</h3>
+                    <p id="enemy-level">Level: 1</p>
+                    <p id="enemy-type">Type: Normal</p>
+                </div>
+                <div id="enemy-character" class="enemy-container">
+                    <!-- Enemy character will be added via JS -->
+                </div>
+                <div class="health-bar">
+                    <div id="enemy-health" class="health-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="battle-controls">
+            <button id="start-battle" class="action-button">Start Battle</button>
+            <button id="back-to-menu" class="back-button">Back to Menu</button>
+        </div>
+        
+        <div class="battle-log">
+            <h3>Battle Log</h3>
+            <div id="battle-messages" class="battle-messages"></div>
+        </div>
+        
+        <div id="healing-orb" class="healing-orb" style="display: none;">+</div>
+        <div id="reward-display" class="reward-display" style="display: none;"></div>
+    </div>
+    
+    <script src="battle.js"></script>
+</body>
+</html>
