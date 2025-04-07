@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Stats</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="character.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container stats-container">
+        <div class="icon-bar">
+            <div class="icon icon-games" data-action="games"></div>
+            <div class="icon icon-stats" data-action="stats"></div>
+            <div class="icon icon-inventory" data-action="inventory"></div>
+            <div class="icon icon-room" data-action="room"></div>
+            <div class="icon icon-battle" data-action="battle"></div>
+        </div>
+        
+        <div class="stats-header">
+            <h1>CHARACTER STATS</h1>
+            
+            <div class="character-preview">
+                <div id="character-base" class="character-container">
+                    <div id="char-base" class="char-layer"></div>
+                    <div id="char-body" class="char-layer"></div>
+                    <div id="char-outfit" class="char-layer"></div>
+                    <div id="char-head" class="char-layer"></div>
+                    <div id="char-face" class="char-layer">
+                        <div id="char-mouth"></div>
+                    </div>
+                    <div id="char-headgear" class="char-layer"></div>
+                    <div id="char-weapon" class="char-layer"></div>
+                    <div id="char-accessory" class="char-layer"></div>
+                </div>
+
+                <div id="pet-display" class="pet-preview">
+                    <div id="pet-base" class="pet-container">
+                        <div id="pet-body" class="pet-layer"></div>
+                        <div id="pet-head" class="pet-layer"></div>
+                        <div id="pet-face" class="pet-layer">
+                            <div id="pet-mouth"></div>
+                        </div>
+                        <div id="pet-accessory" class="pet-layer"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="level-info">
+                <h2>Level <span id="level-value">1</span></h2>
+                <div class="xp-info">
+                    <span>XP: <span id="xp-value">0</span>/<span id="xp-next-level">100</span></span>
+                    <div class="xp-bar">
+                        <div id="xp-fill" class="xp-fill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lives-section">
+                <h3>LIVES</h3>
+                <div id="lives-container" class="lives-container"></div>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h3>BUFFS</h3>
+            <div id="buffs-container" class="buffs-container">
+                <div class="no-buffs">No active buffs</div>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h3>ATTRIBUTES</h3>
+            <div class="attributes-grid">
+                <div class="attribute">
+                    <div class="attribute-name">Intelligence</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill intelligence-fill"></div>
+                    </div>
+                    <div id="intelligence-value" class="attribute-value">10</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-name">Sports</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill sports-fill"></div>
+                    </div>
+                    <div id="sports-value" class="attribute-value">5</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-name">Languages</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill languages-fill"></div>
+                    </div>
+                    <div id="languages-value" class="attribute-value">3</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-name">Energy</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill energy-fill"></div>
+                    </div>
+                    <div id="energy-value" class="attribute-value">8</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-name">Creativity</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill creativity-fill"></div>
+                    </div>
+                    <div id="creativity-value" class="attribute-value">7</div>
+                </div>
+                <div class="attribute">
+                    <div class="attribute-name">Health</div>
+                    <div class="attribute-bar">
+                        <div class="attribute-fill health-fill"></div>
+                    </div>
+                    <div id="health-value" class="attribute-value">10</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <h3>CURRENT EQUIPMENT</h3>
+            <div class="equipment-container">
+                <div class="equipment-slot" data-slot="head">
+                    <div class="slot-name">Head</div>
+                    <div class="slot-icon empty">?</div>
+                </div>
+                <div class="equipment-slot" data-slot="body">
+                    <div class="slot-name">Body</div>
+                    <div class="slot-icon empty">?</div>
+                </div>
+                <div class="equipment-slot" data-slot="accessory">
+                    <div class="slot-name">Accessory</div>
+                    <div class="slot-icon empty">?</div>
+                </div>
+                <div class="equipment-slot" data-slot="special">
+                    <div class="slot-name">Special</div>
+                    <div class="slot-icon empty">?</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-section achievements-section">
+            <h3>ACHIEVEMENTS</h3>
+            <div id="achievement-memory" class="achievement locked">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Memory Master</div>
+                    <div class="achievement-desc">Remember all 16 words in the memory game</div>
+                </div>
+            </div>
+            <div id="achievement-math" class="achievement locked">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Math Wizard</div>
+                    <div class="achievement-desc">Solve 20 math problems in 1 minute</div>
+                </div>
+            </div>
+            <div id="achievement-streak" class="achievement locked">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-info">
+                    <div class="achievement-name">Daily Streak</div>
+                    <div class="achievement-desc">Play for 7 days in a row</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="back-to-home" class="back-button">Back to Menu</button>
+            <button id="customize-button" class="action-button">Customize</button>
+            <button id="pet-button" class="action-button">Pet</button>
+        </div>
+    </div>
+    
+    <!-- Customization Modal -->
+    <div id="customization-modal" class="modal">
+        <div class="modal-content customization-content">
+            <span class="close">&times;</span>
+            <h2>Character Customization</h2>
+            <!-- Content will be dynamically added here -->
+        </div>
+    </div>
+    
+    <script src="stats.js"></script>
+</body>
+</html>
