@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Challenge Instructions</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="colorful-theme">
+  <div class="container">
+    <div class="icon-bar">
+      <div class="icon" data-action="games">
+        <img src="icons/games.png" alt="Games" onerror="this.style.display='none';this.parentNode.innerHTML='🎮'">
+      </div>
+      <div class="icon" data-action="stats">
+        <img src="icons/stats.png" alt="Stats" onerror="this.style.display='none';this.parentNode.innerHTML='📊'">
+      </div>
+      <div class="icon" data-action="room">
+        <img src="icons/room.png" alt="Room" onerror="this.style.display='none';this.parentNode.innerHTML='🏠'">
+      </div>
+      <div class="icon" data-action="inventory">
+        <img src="icons/inventory.png" alt="Inventory" onerror="this.style.display='none';this.parentNode.innerHTML='🎒'">
+      </div>
+      <div class="battle-icon" data-action="battle">⚔️ Battle</div>
+    </div>
+    
+    <h1>MATH CHALLENGE</h1>
+    
+    <div class="instructions">
+      <p>Solve as many math problems as you can, as quickly as possible.</p>
+      <p>Problems include addition, subtraction, multiplication, and division (:).</p>
+      <p>The timer starts at 00:00 and counts up.</p>
+      <p>You'll earn more XP for faster completion:</p>
+      <ul>
+        <li>Less than 2 minutes: Maximum XP</li>
+        <li>Under 2:30: Great XP reward</li>
+        <li>Under 3 minutes: Good XP reward</li>
+        <li>Under 4 minutes: Standard XP reward</li>
+      </ul>
+      <p>Try to beat your personal record!</p>
+    </div>
+    
+    <div class="button-container">
+      <button onclick="window.location.href='index.html'" class="back-button">Back</button>
+      <button onclick="window.location.href='math_game.html'" class="action-button">Start Game</button>
+    </div>
+    
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+      <button id="dark-theme">Dark</button>
+      <button id="light-theme">Light</button>
+      <button id="colorful-theme">Colorful</button>
+    </div>
+  </div>
+  
+  <script>
+    // Initialize Telegram Web App compatibility
+    let tg = window.Telegram && window.Telegram.WebApp;
+    if (tg) {
+      tg.expand();
+    }
+    
+    // Handle icon clicks
+    document.querySelectorAll(".icon, .battle-icon").forEach(icon => {
+      icon.addEventListener("click", function() {
+        const action = this.getAttribute("data-action");
+        if (action === "inventory") {
+          alert("Inventory is coming soon! 🎒");
+        } else if (action === "games") {
+          window.location.href = "index.html";
+        } else if (action === "room") {
+          window.location.href = "room.html";
+        } else if (action === "stats") {
+          window.location.href = "stats.html";
+        } else if (action === "battle") {
+          window.location.href = "battle.html";
+        }
+      });
+    });
+    
+    // Theme switcher functionality
+    document.querySelectorAll(".theme-switcher button").forEach(button => {
+      button.addEventListener("click", function() {
+        const themeClass = this.id;
+        document.body.className = themeClass;
+        localStorage.setItem("preferred-theme", themeClass);
+      });
+    });
+    
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem("preferred-theme");
+    if (savedTheme) {
+      document.body.className = savedTheme;
+    }
+  </script>
+</body>
+</html>

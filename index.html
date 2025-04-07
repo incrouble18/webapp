@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Training</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Add inline SVG icons as fallback */
+    .icon-fallback {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body class="colorful-theme">
+  <div class="container">
+    <div class="icon-bar">
+      <!-- Icons with fallback text -->
+      <div class="icon" data-action="games">
+        <img src="icons/games.png" alt="Games" onerror="this.style.display='none';this.parentNode.innerHTML='🎮'">
+      </div>
+      <div class="icon" data-action="stats">
+        <img src="icons/stats.png" alt="Stats" onerror="this.style.display='none';this.parentNode.innerHTML='📊'">
+      </div>
+      <div class="icon" data-action="room">
+        <img src="icons/room.png" alt="Room" onerror="this.style.display='none';this.parentNode.innerHTML='🏠'">
+      </div>
+      <div class="icon" data-action="inventory">
+        <img src="icons/inventory.png" alt="Inventory" onerror="this.style.display='none';this.parentNode.innerHTML='🎒'">
+      </div>
+      <div class="battle-icon" data-action="battle">⚔️ Battle</div>
+    </div>
+
+    <h1>DAILY TRAINING</h1>
+
+    <div class="game-grid">
+      <div class="game-card math-game">
+        <h2>MATH</h2>
+        <p>15 + 16 = ?</p>
+        <button class="start-button" data-game="math">START</button>
+      </div>
+      
+      <div class="game-card memory-game">
+        <h2>MEMORY</h2>
+        <p>Remember 16 words in 2 minutes</p>
+        <button class="start-button" data-game="memory">START</button>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+      <button id="dark-theme">Dark</button>
+      <button id="light-theme">Light</button>
+      <button id="colorful-theme">Colorful</button>
+    </div>
+  </div>
+
+  <!-- Modal Dialog -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-message"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
