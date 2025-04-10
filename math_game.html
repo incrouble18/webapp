@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Challenge</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Add custom styles for this page */
+    #game-area {
+      display: none;
+    }
+    
+    #results {
+      display: none;
+    }
+    
+    .problem-container {
+      margin: 20px 0;
+    }
+    
+    /* Position submit button below input */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body class="colorful-theme">
+  <div class="container">
+    <div class="icon-bar">
+      <div class="icon icon-games" data-action="games"></div>
+      <div class="icon icon-stats" data-action="stats"></div>
+      <div class="icon icon-inventory" data-action="inventory"></div>
+      <div class="icon icon-room" data-action="room"></div>
+      <div class="icon icon-battle" data-action="battle"></div>
+    </div>
+    
+    <h1>MATH CHALLENGE</h1>
+    
+    <!-- Start Screen -->
+    <div id="start-screen">
+      <div id="countdown" class="timer">3</div>
+      <button id="cancel-math" class="back-button">Cancel</button>
+    </div>
+    
+    <!-- Game Area -->
+    <div id="game-area" class="game-screen">
+      <div class="timer" id="timer">00:00</div>
+      <div id="problem-number">Problem: 1 / 87</div>
+      
+      <div class="problem-container">
+        <div id="math-problem" class="math-problem">? + ? = ?</div>
+        
+        <div class="input-group">
+          <input type="number" id="answer-input" class="answer-input" placeholder="?">
+          <button id="submit-answer" class="submit-button">Submit</button>
+        </div>
+      </div>
+      
+      <button id="cancel" class="back-button">Cancel</button>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="results" class="game-screen">
+      <h2>Your Results</h2>
+      
+      <div class="result-display">
+        <p>Time: <span id="final-time">00:00</span></p>
+        <p>Correct answers: <span id="correct-count">0</span> / 87</p>
+        <p>XP earned: <span id="xp-earned">0</span></p>
+      </div>
+      
+      <div class="records">
+        <h3>Your Records</h3>
+        <div id="records-list"></div>
+      </div>
+      
+      <button id="back-to-menu" class="back-button">Back to Menu</button>
+    </div>
+    
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+      <button id="dark-theme">Dark</button>
+      <button id="light-theme">Light</button>
+      <button id="colorful-theme">Colorful</button>
+    </div>
+  </div>
+  
+  <script src="math_game.js"></script>
+  <script>
+    // Theme switcher functionality
+    document.querySelectorAll(".theme-switcher button").forEach(button => {
+      button.addEventListener("click", function() {
+        const themeClass = this.id;
+        document.body.className = themeClass;
+        localStorage.setItem("preferred-theme", themeClass);
+      });
+    });
+    
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem("preferred-theme");
+    if (savedTheme) {
+      document.body.className = savedTheme;
+    }
+  </script>
+</body>
+</html>
