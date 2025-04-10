@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Training App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="colorful-theme">
+    <div class="container">
+        <div class="icon-bar">
+            <div class="icon games-icon" onclick="window.location.href='./games.html'"></div>
+            <div class="icon stats-icon" onclick="window.location.href='./stats.html'"></div>
+            <div class="icon room-icon" onclick="window.location.href='./room.html'"></div>
+            <div class="icon inventory-icon" onclick="window.location.href='./inventory.html'"></div>
+        </div>
+        
+        <h1>DAILY TRAINING</h1>
+        
+        <div class="game-option">
+            <h2>MATH</h2>
+            <p>15 + 16 = ?</p>
+            <img src="math_start.png" class="start-button" onclick="window.location.href='./math_intro.html'" alt="Start Math">
+        </div>
+        
+        <div class="game-option">
+            <h2>MEMORY</h2>
+            <p>Remember 16 words in 2 minutes</p>
+            <img src="memory_start.png" class="start-button" onclick="window.location.href='./memory_intro.html'" alt="Start Memory">
+        </div>
+        
+        <div class="theme-options">
+            <button onclick="setTheme('colorful-theme')">Colorful</button>
+            <button onclick="setTheme('light-theme')">Light</button>
+            <button onclick="setTheme('dark-theme')">Dark</button>
+        </div>
+    </div>
+
+    <!-- Modal for notifications -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

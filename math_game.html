@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Challenge</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1>⚔️ Battle</h1>
+            <h2>MATH CHALLENGE</h2>
+            
+            <p>Solve as many math problems as you can, as quickly as possible.</p>
+            <p>Problems include addition, subtraction, multiplication, and division (÷).</p>
+            <p>The timer starts at 00:00 and counts up.</p>
+            
+            <p>You'll earn more XP for faster completion:</p>
+            <ul>
+                <li>Less than 2 minutes: Maximum XP</li>
+                <li>Under 2:30: Great XP reward</li>
+                <li>Under 3 minutes: Good XP reward</li>
+                <li>Under 4 minutes: Standard XP reward</li>
+            </ul>
+            
+            <p>Try to beat your personal record!</p>
+            
+            <button id="start-button">Start Challenge</button>
+            <button onclick="window.location.href='index.html'">Back to Main Menu</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" style="display: none;">
+            <h2>MATH CHALLENGE</h2>
+            <div id="timer">00:00</div>
+            
+            <div id="problem-info">
+                <div id="problem-number">Problem: 1 / 87</div>
+            </div>
+            
+            <div class="problem-container">
+                <div id="problem-text">? + ? = ?</div>
+                <input type="number" id="answer-input" autocomplete="off" placeholder="Answer">
+                <button id="submit-button">Submit</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" style="display: none;">
+            <h2>Your Results</h2>
+            
+            <div id="time-result">Time: 00:00</div>
+            <div id="correct-result">Correct answers: 0 / 87</div>
+            <div id="xp-result">XP earned: 0</div>
+            
+            <div id="level-up-message" style="display: none; color: gold; margin: 15px 0;"></div>
+            
+            <h3>Your Records</h3>
+            <div id="record-time">Best time: --:--</div>
+            
+            <button id="return-button">Return to Main Menu</button>
+        </div>
+    </div>
+    
+    <script src="math_game.js"></script>
+</body>
+</html>

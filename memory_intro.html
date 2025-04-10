@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge Introduction</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>MEMORY CHALLENGE</h1>
+        
+        <h2>Instructions:</h2>
+        <p>You will see 16 words all at once on the screen.</p>
+        <p>Try to memorize as many words as possible in 2 minutes.</p>
+        <p>After time runs out, you'll need to recall as many words as you can.</p>
+        <p>Each correctly remembered word earns you XP and improves your Intelligence stat.</p>
+        
+        <button onclick="window.location.href='memory_game.html'">Start Challenge</button>
+        <button onclick="window.location.href='index.html'">Back to Main Menu</button>
+    </div>
+    
+    <script>
+        // Initialize Telegram Web App compatibility
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+        
+        // Initial theme setup
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('brain-training-theme') || 'colorful-theme';
+            document.body.classList.add(savedTheme);
+        });
+    </script>
+</body>
+</html>
