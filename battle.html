@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="battle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Icons -->
+        <div class="icon-bar">
+            <div class="icon icon-games" data-page="games"></div>
+            <div class="icon icon-stats" data-page="stats"></div>
+            <div class="icon icon-inventory" data-page="inventory"></div>
+            <div class="icon icon-room" data-page="room"></div>
+            <div class="icon icon-battle" data-page="battle"></div>
+        </div>
+
+        <div class="battle-container">
+            <h2>⚔️ Battle Arena</h2>
+            <p class="battle-instructions">Click on the enemy to attack! Click on healing orbs when they appear!</p>
+            
+            <div id="battle-area">
+                <div class="player-area">
+                    <h3>Player</h3>
+                    <div class="health-bar">
+                        <div class="health-fill player-health-fill"></div>
+                        <span class="health-text player-health-text">100/100</span>
+                    </div>
+                    <div class="character-image">
+                        <img src="m11.png" alt="Player Character" class="player-image">
+                    </div>
+                </div>
+                
+                <div class="vs-indicator">VS</div>
+                
+                <div class="enemy-area">
+                    <h3>Enemy</h3>
+                    <div class="health-bar">
+                        <div class="health-fill enemy-health-fill"></div>
+                        <span class="health-text enemy-health-text">0/100</span>
+                    </div>
+                    <div class="character-image">
+                        <img src="cyberwolf.png" alt="Enemy Character" class="enemy-image">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Battle Log -->
+            <div class="battle-log">
+                <p id="battle-message">Battle ready! Click the enemy to attack!</p>
+            </div>
+            
+            <!-- Battle Start Button (Initially Visible) -->
+            <div id="battle-start" class="battle-overlay">
+                <div class="battle-start-content">
+                    <h2>Ready for Battle?</h2>
+                    <button id="start-battle-btn" class="btn">Start Battle</button>
+                </div>
+            </div>
+            
+            <!-- Battle Results (Initially Hidden) -->
+            <div id="battle-results" class="battle-overlay" style="display: none;">
+                <div class="battle-results-content">
+                    <h2 id="result-title">Victory!</h2>
+                    <p>+<span id="xp-earned">0</span> XP</p>
+                    <p>New Item: <span id="item-earned">None</span></p>
+                    <button id="continue-btn" class="btn">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="navigation.js"></script>
+    <script src="battle.js"></script>
+</body>
+</html>

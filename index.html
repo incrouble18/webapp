@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Game</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Дополнительные стили для конкретной страницы будут подключаться здесь -->
+    <link rel="stylesheet" href="battle.css" id="page-specific-css">
+</head>
+<body>
+    <div class="container">
+        <!-- Навигационные иконки - одинаковые для всех страниц -->
+        <div class="icon-bar">
+            <div class="icon icon-games" data-page="games"></div>
+            <div class="icon icon-stats" data-page="stats"></div>
+            <div class="icon icon-inventory" data-page="inventory"></div>
+            <div class="icon icon-room" data-page="room"></div>
+            <div class="icon icon-battle" data-page="battle"></div>
+        </div>
+        
+        <!-- Содержимое страницы будет загружаться динамически через JavaScript -->
+        <div id="page-content">
+            <!-- Здесь будет содержимое конкретной страницы -->
+        </div>
+    </div>
+    
+    <script src="navigation.js"></script>
+    <script src="script.js"></script>
+    <!-- Дополнительные скрипты для конкретной страницы будут подключаться здесь -->
+    <script src="battle.js" id="page-specific-js"></script>
+</body>
+</html>
