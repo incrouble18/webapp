@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Challenge</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Небольшие доп стили для игрового экрана, если нужны -->
+  <style>
+    #start-screen, #game-area, #results {
+        display: none; /* Скрываем все экраны по умолчанию */
+    }
+    #start-screen { /* Показываем стартовый экран первым */
+        display: block;
+    }
+  </style>
+</head>
+<body class="colorful-theme"> <!-- Применяем тему -->
+  <div class="container">
+    <!-- Обновленная Icon bar -->
+     <div class="icon-bar">
+        <div class="icon icon-games" data-action="games"></div>
+        <div class="icon icon-battle" data-action="battle"></div>
+        <div class="icon icon-stats" data-action="stats"></div>
+    </div>
+
+    <h1>MATH CHALLENGE</h1>
+
+    <!-- Start Screen with Countdown -->
+    <div id="start-screen">
+      <h2>Get Ready!</h2>
+      <div id="countdown" class="timer">3</div> <!-- Таймер обратного отсчета -->
+      <button id="cancel-math-start" class="back-button">Cancel</button>
+    </div>
+
+    <!-- Game Area -->
+    <div id="game-area" class="game-screen">
+      <div class="timer" id="timer">00:00</div> <!-- Таймер игры -->
+      <div id="problem-number">Problem: 1 / 87</div>
+
+      <div class="problem-container">
+        <div id="math-problem" class="math-problem">? + ? = ?</div>
+        <div class="input-group">
+          <input type="number" id="answer-input" class="answer-input" placeholder="Answer" autocomplete="off">
+          <button id="submit-answer" class="submit-button">Submit</button>
+        </div>
+      </div>
+
+      <button id="cancel-math-game" class="back-button">Cancel Game</button>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results" class="game-screen">
+      <h2>Your Results</h2>
+      <div class="result-display">
+        <p>Time: <span id="final-time">00:00</span></p>
+        <p>Correct answers: <span id="correct-count">0</span> / 87</p>
+        <p>XP earned: <span id="xp-earned">0</span></p>
+        <p id="achievement-unlocked-msg" style="color: #f1c40f; display: none;"></p> <!-- Сообщение о достижении -->
+      </div>
+
+      <div class="records">
+        <h3>Your Top 5 Records</h3>
+        <div id="records-list"><p>Loading records...</p></div>
+      </div>
+
+      <div class="button-container">
+          <button id="play-again-math" class="action-button">Play Again</button>
+          <button id="back-to-menu-math" class="back-button">Back to Menu</button>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+      <button id="colorful-theme">Colorful</button>
+      <button id="light-theme">Light</button>
+      <button id="dark-theme">Dark</button>
+    </div>
+  </div>
+
+  <script src="math_game.js"></script>
+  <!-- Маленький скрипт для темы и навигации -->
+  <script>
+     // Инициализация темы при загрузке
+    function loadThemePreference() {
+        const savedTheme = localStorage.getItem("preferred-theme");
+        if (savedTheme && ["colorful-theme", "light-theme", "dark-theme"].includes(savedTheme)) {
+            document.body.className = savedTheme;
+        } else {
+            document.body.className = "colorful-theme"; // Default
+        }
+    }
+    window.addEventListener('load', loadThemePreference); // Используем addEventListener
+
+     // Обработчики навигации
+     document.querySelectorAll(".icon").forEach(icon => {
+        icon.addEventListener("click", function() {
+            // Остановить таймеры перед уходом
+            if (typeof window.stopMathGame === 'function') {
+                window.stopMathGame(); // Предполагаем, что такая функция есть в math_game.js
+            }
+            const action = this.getAttribute("data-action");
+            if (action === "games") window.location.href = "index.html";
+            else if (action === "battle") window.location.href = "battle.html";
+            else if (action === "stats") window.location.href = "stats.html";
+        });
+    });
+
+    // Обработчики смены темы
+    document.querySelectorAll(".theme-switcher button").forEach(button => {
+        button.addEventListener("click", function() {
+            const themeId = this.id;
+            document.body.className = themeId;
+            localStorage.setItem("preferred-theme", themeId);
+        });
+    });
+  </script>
+</body>
+</html>

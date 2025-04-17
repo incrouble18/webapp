@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Stats</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="character.css"> <!-- Нужен для отображения персонажа -->
+    <!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> --> <!-- Опционально, если используете функции ТГ -->
+</head>
+<body class="colorful-theme"> <!-- Применяем тему -->
+    <div class="container stats-container"> <!-- Используем специфичный класс контейнера -->
+        <!-- Обновленная Icon bar -->
+        <div class="icon-bar">
+            <div class="icon icon-games" data-action="games"></div>
+            <div class="icon icon-battle" data-action="battle"></div>
+            <div class="icon icon-stats" data-action="stats"></div>
+        </div>
+
+        <div class="stats-header">
+            <h1>CHARACTER STATS</h1>
+
+            <!-- Отображение персонажа -->
+            <div class="character-preview">
+                <div id="character-base" class="character-container">
+                    <!-- Слои генерируются JS -->
+                    <div id="char-base" class="char-layer"></div>
+                    <div id="char-body" class="char-layer"></div>
+                    <div id="char-outfit" class="char-layer"></div>
+                    <div id="char-head" class="char-layer"></div>
+                    <div id="char-face" class="char-layer">
+                        <div id="char-mouth"></div>
+                    </div>
+                    <div id="char-headgear" class="char-layer"></div>
+                    <div id="char-weapon" class="char-layer"></div>
+                    <!-- <div id="char-accessory" class="char-layer"></div> --> <!-- Если будет добавлено -->
+                </div>
+                <!-- Отображение питомца (если он есть и разблокирован) -->
+                <div id="pet-display" class="pet-preview" style="display: none;"> <!-- Скрыт по умолчанию -->
+                    <div id="pet-base" class="pet-container">
+                         <!-- Слои питомца генерируются JS -->
+                        <div id="pet-body" class="pet-layer"></div>
+                        <div id="pet-head" class="pet-layer"></div>
+                        <div id="pet-face" class="pet-layer">
+                            <div id="pet-mouth"></div>
+                        </div>
+                        <div id="pet-accessory" class="pet-layer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Уровень и Опыт -->
+            <div class="level-info">
+                <h2>Level <span id="level-value">1</span></h2>
+                <div class="xp-info">
+                    <span>XP: <span id="xp-value">0</span> / <span id="xp-next-level">100</span></span>
+                    <div class="xp-bar">
+                        <div id="xp-fill" class="xp-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Жизни -->
+            <div class="lives-section">
+                <h3>LIVES</h3>
+                <div id="lives-container" class="lives-container">
+                    <!-- Иконки жизней генерируются JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Баффы (от комнаты) -->
+        <div class="stats-section">
+            <h3>ROOM BUFFS</h3>
+            <div id="buffs-container" class="buffs-container">
+                <div class="no-buffs">No active buffs</div> <!-- По умолчанию -->
+            </div>
+        </div>
+
+        <!-- Атрибуты -->
+        <div class="stats-section">
+            <h3>ATTRIBUTES</h3>
+            <div class="attributes-grid">
+                <!-- Атрибуты генерируются JS -->
+                <div class="attribute">
+                    <div class="attribute-name">Intelligence</div>
+                    <div class="attribute-bar"><div class="attribute-fill intelligence-fill"></div></div>
+                    <div id="intelligence-value" class="attribute-value">0</div>
+                </div>
+                 <div class="attribute">
+                    <div class="attribute-name">Sports</div>
+                    <div class="attribute-bar"><div class="attribute-fill sports-fill"></div></div>
+                    <div id="sports-value" class="attribute-value">0</div>
+                </div>
+                 <div class="attribute">
+                    <div class="attribute-name">Languages</div>
+                    <div class="attribute-bar"><div class="attribute-fill languages-fill"></div></div>
+                    <div id="languages-value" class="attribute-value">0</div>
+                </div>
+                 <div class="attribute">
+                    <div class="attribute-name">Energy</div>
+                    <div class="attribute-bar"><div class="attribute-fill energy-fill"></div></div>
+                    <div id="energy-value" class="attribute-value">0</div>
+                </div>
+                 <div class="attribute">
+                    <div class="attribute-name">Creativity</div>
+                    <div class="attribute-bar"><div class="attribute-fill creativity-fill"></div></div>
+                    <div id="creativity-value" class="attribute-value">0</div>
+                </div>
+                 <div class="attribute">
+                    <div class="attribute-name">Health</div>
+                    <div class="attribute-bar"><div class="attribute-fill health-fill"></div></div>
+                    <div id="health-value" class="attribute-value">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Снаряжение -->
+        <div class="stats-section">
+            <h3>EQUIPMENT</h3>
+            <div class="equipment-container">
+                <!-- Слоты генерируются JS -->
+                <div class="equipment-slot" data-slot="headgear">
+                    <div class="slot-name">Head</div>
+                    <div class="slot-icon empty">?</div> <!-- Иконка -->
+                </div>
+                 <div class="equipment-slot" data-slot="outfit">
+                    <div class="slot-name">Body</div>
+                    <div class="slot-icon empty">?</div> <!-- Иконка -->
+                </div>
+                 <div class="equipment-slot" data-slot="weapon">
+                    <div class="slot-name">Weapon</div>
+                    <div class="slot-icon empty">?</div> <!-- Иконка -->
+                </div>
+                 <div class="equipment-slot" data-slot="skin"> <!-- Слот для скина -->
+                    <div class="slot-name">Skin</div>
+                    <div class="slot-icon equipped">S</div> <!-- Иконка (всегда есть) -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Достижения -->
+        <div class="stats-section achievements-section">
+            <h3>ACHIEVEMENTS</h3>
+            <div id="achievements-list">
+                <!-- Достижения генерируются JS -->
+                <div id="achievement-memoryMaster" class="achievement locked">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Memory Master</div>
+                        <div class="achievement-desc">Remember 30 words in the memory game</div>
+                    </div>
+                </div>
+                <div id="achievement-mathWizard" class="achievement locked">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">Math Wizard</div>
+                        <div class="achievement-desc">Solve 87 math problems under 4 minutes</div>
+                    </div>
+                </div>
+                <!-- Добавьте другие достижения сюда, если нужно -->
+            </div>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="button-container">
+            <button id="back-to-home" class="back-button">Back to Menu</button>
+            <button id="customize-button" class="action-button">Customize Character</button>
+            <button id="pet-button" class="action-button" style="display: none;">Customize Pet</button> <!-- Скрыта по умолчанию -->
+        </div>
+    </div>
+
+    <!-- Модальное окно для кастомизации -->
+    <div id="customization-modal" class="modal" style="display: none;">
+        <div class="modal-content customization-content">
+            <span class="close">×</span>
+            <h2>Customize</h2>
+            <!-- Содержимое генерируется JS -->
+        </div>
+    </div>
+
+     <!-- Theme switcher -->
+    <div class="theme-switcher">
+        <button id="colorful-theme">Colorful</button>
+        <button id="light-theme">Light</button>
+        <button id="dark-theme">Dark</button>
+    </div>
+
+    <script src="stats.js"></script>
+</body>
+</html>

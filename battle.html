@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle - Brain Training Game</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Подключаем battle.css и character.css, так как они нужны для стилизации боя -->
+  <link rel="stylesheet" href="battle.css">
+  <link rel="stylesheet" href="character.css">
+</head>
+<body class="colorful-theme"> <!-- Убедимся, что тема применяется по умолчанию -->
+  <div class="container">
+    <!-- Обновленная Icon bar -->
+    <div class="icon-bar">
+      <div class="icon icon-games" data-action="games"></div>
+      <div class="icon icon-battle" data-action="battle"></div>
+      <div class="icon icon-stats" data-action="stats"></div>
+    </div>
+
+    <h1>⚔️ Battle Arena</h1>
+
+    <!-- Battle Quiz Section (Если используется) -->
+    <div id="battle-quiz-container" class="battle-quiz-container">
+      <h3>Answer correctly for battle buffs!</h3>
+      <div id="battle-quiz-question" class="battle-quiz-question"></div>
+      <div id="battle-quiz-options" class="battle-quiz-options"></div>
+      <div id="quiz-result" class="result-display"></div>
+      <div class="battle-start-container">
+        <button id="start-battle-button" class="action-button" style="display: none;">Start Battle</button>
+      </div>
+    </div>
+
+    <!-- Battle Arena Section -->
+    <div id="battle-container" class="battle-container" style="display: none;"> <!-- Скрыт по умолчанию, показывается после квиза -->
+      <div class="player-area">
+        <!-- Отображение персонажа игрока -->
+        <div id="player-character" class="character-container">
+            <!-- Слои персонажа будут добавлены через JS (updatePlayerAppearance) -->
+        </div>
+        <div class="health-bar">
+          <div id="player-health" class="health-fill" style="background-color: #27ae60;"></div>
+        </div>
+        <div id="player-name">You</div> <!-- Добавим имя игрока для ясности -->
+      </div>
+
+      <div class="vs-indicator">VS</div>
+
+      <div class="enemy-area">
+        <!-- Отображение врага -->
+        <div id="enemy-character" class="enemy-container">
+            <!-- Класс врага будет добавлен через JS (setupEnemy) -->
+        </div>
+        <div class="enemy-info"> <!-- Обёртка для информации о враге -->
+          <div id="enemy-name">Enemy</div>
+          <div id="enemy-level">Level: 1</div>
+          <div id="enemy-type">Type: Normal</div>
+        </div>
+        <div class="health-bar">
+          <div id="enemy-health" class="health-fill" style="background-color: #27ae60;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Область для исцеляющей сферы -->
+    <div id="healing-orb" class="healing-orb" style="display: none;">+</div>
+
+    <!-- Сообщения боя -->
+    <div id="battle-messages" class="battle-messages"></div>
+
+    <!-- Кнопка Назад -->
+    <div class="button-container">
+      <button id="back-to-menu" class="back-button">Back to Menu</button>
+    </div>
+
+    <!-- Theme switcher (оставим на всякий случай) -->
+    <div class="theme-switcher">
+        <button id="colorful-theme">Colorful</button>
+        <button id="light-theme">Light</button>
+        <button id="dark-theme">Dark</button>
+    </div>
+
+  </div>
+
+  <!-- Подключаем скрипты -->
+  <script src="battle_quiz.js"></script>
+  <script src="battle.js"></script>
+</body>
+</html>

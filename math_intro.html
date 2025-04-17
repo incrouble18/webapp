@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge - Instructions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="colorful-theme"> <!-- Применяем тему -->
+    <div class="container">
+        <!-- Обновленная Icon bar -->
+        <div class="icon-bar">
+            <div class="icon icon-games" data-action="games"></div>
+            <div class="icon icon-battle" data-action="battle"></div>
+            <div class="icon icon-stats" data-action="stats"></div>
+        </div>
+
+        <h1>MEMORY CHALLENGE</h1>
+
+        <div class="instructions">
+             <h2>How to Play:</h2>
+            <p>You will be shown <strong>30 words</strong> on the screen.</p>
+            <p>You have <strong>2 minutes</strong> to memorize as many words as possible.</p>
+            <p>After the time is up, you will be asked to type all the words you remember.</p>
+            <p>Separate recalled words with spaces or new lines.</p>
+            <p>Earn XP (5 per word) and improve your Intelligence stat based on how many words you correctly recall.</p>
+            <p>Unlock the <strong>Memory Master</strong> achievement by recalling all 30 words!</p>
+        </div>
+
+        <div class="button-container">
+            <button onclick="window.location.href='index.html'" class="back-button">Back to Menu</button>
+            <button onclick="window.location.href='memory_game.html'" class="action-button">Start Game</button>
+        </div>
+
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+            <button id="colorful-theme">Colorful</button>
+            <button id="light-theme">Light</button>
+            <button id="dark-theme">Dark</button>
+        </div>
+    </div>
+      <script>
+        // Basic script for theme and navigation
+        let tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) tg.expand();
+
+        document.querySelectorAll(".icon").forEach(icon => {
+            icon.addEventListener("click", function() {
+                const action = this.getAttribute("data-action");
+                if (action === "games") window.location.href = "index.html";
+                else if (action === "battle") window.location.href = "battle.html";
+                else if (action === "stats") window.location.href = "stats.html";
+            });
+        });
+
+        document.querySelectorAll(".theme-switcher button").forEach(button => {
+            button.addEventListener("click", function() {
+                const themeId = this.id;
+                document.body.className = themeId;
+                localStorage.setItem("preferred-theme", themeId);
+            });
+        });
+
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem("preferred-theme");
+            if (savedTheme && ["colorful-theme", "light-theme", "dark-theme"].includes(savedTheme)) {
+                document.body.className = savedTheme;
+            } else {
+                document.body.className = "colorful-theme";
+            }
+        }
+        window.onload = loadThemePreference;
+      </script>
+</body>
+</html>

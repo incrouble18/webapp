@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Challenge</title>
+    <link rel="stylesheet" href="style.css">
+     <style>
+        /* Скрываем экраны по умолчанию, показываем первый */
+        #memorize-phase, #recall-phase, #results {
+            display: none;
+        }
+        #memorize-phase {
+            display: block;
+        }
+    </style>
+</head>
+<body class="colorful-theme"> <!-- Применяем тему -->
+    <div class="container">
+         <!-- Обновленная Icon bar -->
+         <div class="icon-bar">
+            <div class="icon icon-games" data-action="games"></div>
+            <div class="icon icon-battle" data-action="battle"></div>
+            <div class="icon icon-stats" data-action="stats"></div>
+        </div>
+
+        <!-- Memorize Phase -->
+        <div id="memorize-phase" class="game-screen">
+            <h1>MEMORY CHALLENGE</h1>
+            <div class="timer" id="timer">02:00</div>
+            <h3>Memorize these 30 words:</h3>
+            <div id="word-container" class="word-container">
+                <!-- Слова генерируются JS -->
+            </div>
+            <button id="cancel-memory" class="back-button">Cancel Game</button>
+        </div>
+
+        <!-- Recall Phase -->
+        <div id="recall-phase" class="game-screen">
+            <h1>Time's Up!</h1>
+            <p>Type all the words you remember below.</p>
+            <p>(Separate words with spaces or new lines)</p>
+            <textarea id="recall-input" class="recall-input" placeholder="Type recalled words here..."></textarea>
+            <button id="submit-recall" class="action-button">Submit Recall</button>
+            <button id="cancel-recall" class="back-button">Cancel Game</button>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="game-screen">
+            <h1>Your Results</h1>
+            <div class="result-display">
+                <p>Words correctly remembered: <span id="correct-count">0</span> / 30</p>
+                <p>XP earned: <span id="xp-earned">0</span></p>
+                 <p id="achievement-unlocked-msg" style="color: #f1c40f; display: none;"></p> <!-- Сообщение о достижении -->
+            </div>
+             <div class="button-container">
+                <button id="play-again-memory" class="action-button">Play Again</button>
+                <button id="back-to-menu-memory" class="back-button">Back to Menu</button>
+             </div>
+        </div>
+
+         <!-- Theme Switcher -->
+        <div class="theme-switcher">
+            <button id="colorful-theme">Colorful</button>
+            <button id="light-theme">Light</button>
+            <button id="dark-theme">Dark</button>
+        </div>
+    </div>
+
+    <script src="memory_game.js"></script>
+     <!-- Маленький скрипт для темы и навигации -->
+     <script>
+        // Инициализация темы при загрузке
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem("preferred-theme");
+            if (savedTheme && ["colorful-theme", "light-theme", "dark-theme"].includes(savedTheme)) {
+                document.body.className = savedTheme;
+            } else {
+                document.body.className = "colorful-theme";
+            }
+        }
+         window.addEventListener('load', loadThemePreference);
+
+        // Обработчики навигации
+        document.querySelectorAll(".icon").forEach(icon => {
+            icon.addEventListener("click", function() {
+                // Остановить таймеры перед уходом
+                if (typeof window.stopMemoryGame === 'function') {
+                    window.stopMemoryGame(); // Предполагаем, что такая функция есть в memory_game.js
+                }
+                const action = this.getAttribute("data-action");
+                if (action === "games") window.location.href = "index.html";
+                else if (action === "battle") window.location.href = "battle.html";
+                else if (action === "stats") window.location.href = "stats.html";
+            });
+        });
+
+        // Обработчики смены темы
+        document.querySelectorAll(".theme-switcher button").forEach(button => {
+            button.addEventListener("click", function() {
+                const themeId = this.id;
+                document.body.className = themeId;
+                localStorage.setItem("preferred-theme", themeId);
+            });
+        });
+     </script>
+</body>
+</html>
